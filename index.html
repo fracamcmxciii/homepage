@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOMEPAGE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000;
+    --panel: #0b0b0b;
+    --panel-hover: #141414;
+    --border: #1f1f1f;
+    --text: #ece7f4;
+    --muted: #9a8fb5;
+    --accent: #8a2fe0;
+    --accent2: #b7d900;
+    --nerv: #ff3b1f;
+  }
+  @font-face {
+    font-family: "LCD";
+    src: url("font/LCDAT&TPhoneTimeDate.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Times New Roman MT Std";
+    src: url("font/Times-New-Roman-MT-Std-Bold-Condensed.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Rajdhani", system-ui, sans-serif;
+    letter-spacing: .02em;
+    min-height: 100vh;
+    padding: 42px 24px 60px;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      repeating-linear-gradient(60deg, transparent 0 26px, rgba(255,255,255,.03) 26px 28px),
+      repeating-linear-gradient(-60deg, transparent 0 26px, rgba(255,255,255,.03) 26px 28px);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 14px;
+    z-index: 60;
+    background: repeating-linear-gradient(60deg, #ff7b00 0 18px, #0a0812 18px 36px);
+  }
+  header, main { position: relative; z-index: 1; }
+  header { margin-bottom: 32px; }
+  .toprow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 6px auto 0;
+    gap: 28px;
+    text-align: center;
+  }
+  .brand {
+    flex-shrink: 0;
+    width: 1025px;
+    height: auto;
+    font-size: 120px;
+    letter-spacing: -3px;
+    line-height: 100px;
+    color: #ffffff;
+    font-weight: 700;
+    font-family: "Times New Roman MT Std", serif;
+    text-transform: uppercase;
+    text-align: left;
+    overflow: hidden;
+  }
+  .brand .half {
+    font-size: 60px;
+    letter-spacing: -1.5px;
+    line-height: 50px;
+  }
+  .brand-date {
+    font-family: "Roboto", sans-serif;
+    font-size: 42px;
+    line-height: 1.1;
+    letter-spacing: 0;
+    margin-top: 10px;
+  }
+  .clockwrap {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    font-family: "LCD", "DSEG7 Classic", monospace;
+    font-size: clamp(3rem, 9vw, 5rem);
+    letter-spacing: -1px;
+    color: #ff7b00;
+    transform: scaleY(1.5);
+    transform-origin: center;
+    text-shadow: 0 0 6px rgba(255,123,0,.7), 0 0 18px rgba(255,123,0,.4);
+  }
+  .clock-t {
+    font-size: .35em;
+    letter-spacing: 0;
+    margin-left: 2px;
+    opacity: .9;
+  }
+  .weather {
+    position: relative;
+    min-width: 200px;
+    background: var(--panel);
+    border: 3px solid rgba(255,123,0,.5);
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    clip-path: polygon(
+      0 12px,
+      12px 0,
+      calc(100% - 20px) 0,
+      100% 20px,
+      100% calc(100% - 12px),
+      calc(100% - 12px) 100%,
+      20px 100%,
+      0 calc(100% - 20px)
+    );
+    animation: pulse 3s ease-in-out infinite;
+  }
+  .weather::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    border-top: 2px solid rgba(255,123,0,.8);
+    border-right: 2px solid rgba(255,123,0,.8);
+  }
+  .weather::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    width: 16px;
+    height: 16px;
+    border-bottom: 2px solid rgba(255,123,0,.8);
+    border-left: 2px solid rgba(255,123,0,.8);
+  }
+  .w-label { font-size: .68rem; letter-spacing: 2px; text-transform: uppercase; color: #ff7b00; font-weight: 700; }
+  .w-main { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 6px; color: #ff7b00; }
+  .w-main .ico { font-size: 1.3rem; }
+  .w-minmax { font-size: .75rem; color: var(--muted); }
+  .search { margin-top: 6px; text-align: center; }
+  .search input {
+    width: min(520px, 92vw);
+    padding: 13px 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1rem;
+    letter-spacing: .03em;
+    outline: none;
+    transition: border .2s, box-shadow .2s;
+  }
+  .search input:focus {
+    border-color: var(--nerv);
+    box-shadow: 0 0 0 3px rgba(255,59,31,.22);
+  }
+  .search input::placeholder {
+    color: #ff7b00;
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(255,123,0,.55);
+  }
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+  }
+  section {
+    position: relative;
+    background: var(--panel);
+    border: 3px solid rgba(255,123,0,.35);
+    border-radius: 10px;
+    padding: 16px 16px 10px;
+    clip-path: polygon(
+      0 16px,
+      16px 0,
+      calc(100% - 26px) 0,
+      100% 26px,
+      100% calc(100% - 16px),
+      calc(100% - 16px) 100%,
+      26px 100%,
+      0 calc(100% - 26px)
+    );
+    transition: transform .15s, box-shadow .15s;
+  }
+  section::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border-top: 2px solid rgba(255,123,0,.75);
+    border-right: 2px solid rgba(255,123,0,.75);
+  }
+  section::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    border-bottom: 2px solid rgba(255,123,0,.75);
+    border-left: 2px solid rgba(255,123,0,.75);
+  }
+  section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,.45), 0 0 18px rgba(255,123,0,.25);
+  }
+  section h2 {
+    font-family: "Orbitron", sans-serif;
+    font-size: .72rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ff7b00;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  section h2::before {
+    content: "";
+    display: inline-block;
+    width: 10px; height: 10px;
+    margin-right: 8px;
+    background: #ff7b00;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  ul { list-style: none; }
+  li { margin-bottom: 3px; }
+  a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background .15s;
+  }
+  a:hover { background: var(--panel-hover); }
+  a .fav {
+    width: 34px; height: 32px;
+    flex-shrink: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Orbitron", sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .5px;
+    background: var(--c, var(--border));
+    color: var(--t, #fff);
+    text-transform: uppercase;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  a.featured {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c, var(--accent)) 16%, transparent), rgba(183,217,0,.12));
+    border: 1px solid rgba(183,217,0,.5);
+    box-shadow: 0 0 12px rgba(183,217,0,.08);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  a.featured .fav {
+    background: linear-gradient(150deg, var(--c, var(--accent)), color-mix(in srgb, var(--c, var(--accent)) 55%, #000));
+  }
+  a.home-link { color: var(--text); font-weight: 700; letter-spacing: .04em; }
+  @keyframes shimmer { to { background-position: 200% center; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,123,0,0); }
+    50% { box-shadow: 0 0 18px 0 rgba(255,123,0,.3); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  section { animation: rise .55s ease both; }
+  section:nth-child(2) { animation-delay: .05s; }
+  section:nth-child(3) { animation-delay: .10s; }
+  section:nth-child(4) { animation-delay: .15s; }
+  section:nth-child(5) { animation-delay: .20s; }
+  section:nth-child(6) { animation-delay: .25s; }
+  section:nth-child(7) { animation-delay: .30s; }
+  section:nth-child(8) { animation-delay: .35s; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="toprow">
+    <div class="brand">
+      <div class="half">web</div>
+      <div class="half">browser</div>
+      <div>homepage</div>
+      <div class="brand-date" id="branddate"></div>
+    </div>
+    <div class="clockwrap">
+      <span id="clock">--:--:--</span><span class="clock-t" id="ct"></span>
+    </div>
+    <div class="weather" id="weather">
+      <div class="w-label">Meteo di domani</div>
+      <div class="w-main"><span class="ico" id="w-icon">...</span> <span id="w-temp">--</span></div>
+      <div class="w-minmax" id="w-minmax"></div>
+    </div>
+  </div>
+  <div class="search">
+    <input id="q" type="search" placeholder="MAGI SYSTEM ONLINE ▍">
+  </div>
+</header>
+
+<main>
+  <!-- CATEGORIA: HOMEPAGE -->
+  <section>
+    <h2>00. Homepage</h2>
+    <ul>
+      <li><a class="featured" style="--c:#f42b3c;" href="http://localhost:7575/" target="_blank"><span class="fav">HO</span> Homarr</a></li>
+      <li><a class="home-link" style="--c:#17b3a8;" href="https://localhost:47990/" target="_blank"><span class="fav">SU</span> Sunshine</a></li>
+    </ul>
+  </section>
+
+  <!-- CATEGORIA: GOOGLE -->
+  <section>
+    <h2>0. Google</h2>
+    <ul>
+      <li><a class="featured" style="--c:#ff0000;" href="https://www.youtube.com/" target="_blank"><span class="fav">YT</span> YouTube</a></li>
+      <li><a style="--c:#5b5fef;" href="https://gemini.google.com/" target="_blank"><span class="fav">GE</span> Gemini</a></li>
+      <li><a style="--c:#ea4335;" href="https://mail.google.com/" target="_blank"><span class="fav">GM</span> Gmail</a></li>
+      <li><a style="--c:#1a73e8;" href="https://drive.google.com/" target="_blank"><span class="fav">DR</span> Drive</a></li>
+      <li><a style="--c:#34a853;" href="https://maps.google.com/" target="_blank"><span class="fav">MA</span> Maps</a></li>
+    </ul>
+  </section>
+
+  <!-- CATEGORIA: SOCIAL -->
+  <section>
+    <h2>1. Social</h2>
+    <ul>
+      <li><a class="featured" style="--c:#ff4500;" href="https://www.reddit.com/" target="_blank"><span class="fav">RD</span> Reddit</a></li>
+      <li><a style="--c:#229ed9;" href="https://web.telegram.org/" target="_blank"><span class="fav">TG</span> Telegram</a></li>
+      <li><a style="--c:#e1306c;" href="https://www.instagram.com/" target="_blank"><span class="fav">IN</span> Instagram</a></li>
+      <li><a style="--c:#1877f2;" href="https://www.facebook.com/" target="_blank"><span class="fav">FB</span> Facebook</a></li>
+    </ul>
+  </section>
+
+  <!-- CATEGORIA: MEDIA -->
+  <section>
+    <h2>2. Media</h2>
+    <ul>
+      <li><a class="featured" style="--c:#2bb54e;" href="https://streamingcommunityz.taxi/it/watch/55717" target="_blank"><span class="fav">SC</span> StreamingCommunity</a></li>
+      <li><a style="--c:#ef4444;" href="https://fmhy.net/" target="_blank"><span class="fav">FM</span> FMHY</a></li>
+      <li><a style="--c:#1db954;" href="https://open.spotify.com/" target="_blank"><span class="fav">SP</span> Spotify</a></li>
+      <li><a style="--c:#f5c518; --t:#111;" href="https://www.imdb.com/" target="_blank"><span class="fav">IM</span> IMDb</a></li>
+    </ul>
+  </section>
+
+  <!-- CATEGORIA: GAMING -->
+  <section>
+    <h2>3. Gaming</h2>
+    <ul>
+      <li><a class="featured" style="--c:#65b642;" href="https://fitgirl-repacks.site/" target="_blank"><span class="fav">FG</span> FitGirl Repacks</a></li>
+      <li><a style="--c:#66c0f4;" href="https://store.steampowered.com/" target="_blank"><span class="fav">ST</span> Steam</a></li>
+      <li><a style="--c:#7b42bc;" href="https://store.epicgames.com/" target="_blank"><span class="fav">EP</span> Epic Games</a></li>
+      <li><a style="--c:#d61920;" href="https://www.gog.com/" target="_blank"><span class="fav">GO</span> GOG</a></li>
+    </ul>
+  </section>
+
+  <!-- CATEGORIA: LAB -->
+  <section>
+    <h2>4. Lab</h2>
+    <ul>
+      <li><a class="featured" style="--c:#24292e;" href="https://github.com/" target="_blank"><span class="fav">GH</span> GitHub</a></li>
+      <li><a style="--c:#ff7700;" href="https://makerworld.com/" target="_blank"><span class="fav">MW</span> MakerWorld</a></li>
+      <li><a style="--c:#1e88c7;" href="https://www.thingiverse.com/" target="_blank"><span class="fav">TV</span> Thingiverse</a></li>
+      <li><a style="--c:#ff5722;" href="https://www.printables.com/" target="_blank"><span class="fav">PR</span> Printables</a></li>
+      <li><a style="--c:#17a673;" href="https://wokwi.com/" target="_blank"><span class="fav">WK</span> Wokwi</a></li>
+      <li><a style="--c:#ff7700;" href="https://www.tinkercad.com/" target="_blank"><span class="fav">TC</span> Tinkercad</a></li>
+    </ul>
+  </section>
+
+  <!-- CATEGORIA: GPX -->
+  <section>
+    <h2>5. GPX</h2>
+    <ul>
+      <li><a class="featured" style="--c:#e60023;" href="https://www.pinterest.com/" target="_blank"><span class="fav">PI</span> Pinterest</a></li>
+      <li><a style="--c:#00c4cc;" href="https://www.canva.com/" target="_blank"><span class="fav">CA</span> Canva</a></li>
+      <li><a style="--c:#1397b9;" href="https://www.photopea.com/" target="_blank"><span class="fav">PP</span> Photopea</a></li>
+      <li><a style="--c:#eb4b5c;" href="https://www.remove.bg/" target="_blank"><span class="fav">RB</span> Remove.bg</a></li>
+      <li><a style="--c:#2b6ed7;" href="https://www.dafont.com/" target="_blank"><span class="fav">DF</span> Dafont</a></li>
+      <li><a style="--c:#4f46e5;" href="https://www.calligraphr.com/" target="_blank"><span class="fav">CL</span> Calligraphr</a></li>
+    </ul>
+  </section>
+
+  <!-- CATEGORIA: SHOP -->
+  <section>
+    <h2>6. Shop</h2>
+    <ul>
+      <li><a class="featured" style="--c:#f03416;" href="https://www.aliexpress.com/" target="_blank"><span class="fav">AL</span> AliExpress</a></li>
+      <li><a style="--c:#ff9900; --t:#111;" href="https://www.amazon.com/" target="_blank"><span class="fav">AM</span> Amazon</a></li>
+      <li><a style="--c:#e53238;" href="https://www.ebay.com/" target="_blank"><span class="fav">EB</span> eBay</a></li>
+      <li><a style="--c:#0058a3;" href="https://www.ikea.com/" target="_blank"><span class="fav">IK</span> IKEA</a></li>
+    </ul>
+  </section>
+</main>
+
+<script>
+  const W_LAT = 43.94;
+  const W_LON = 10.30;
+
+  const WMO = {
+    0:["☀️","Sereno"], 1:["🌤️","Poco nuvoloso"], 2:["⛅","Parz. nuvoloso"], 3:["☁️","Coperto"],
+    45:["🌫️","Nebbia"], 48:["🌫️","Galaverna"],
+    51:["🌦️","Pioviggine"], 53:["🌦️","Pioviggine"], 55:["🌧️","Pioviggine"],
+    56:["🌧️","Pioggia ghiacciata"], 57:["🌧️","Pioggia ghiacciata"],
+    61:["🌧️","Pioggia"], 63:["🌧️","Pioggia"], 65:["🌧️","Pioggia forte"],
+    66:["🌧️","Pioggia ghiacciata"], 67:["🌧️","Pioggia ghiacciata"],
+    71:["🌨️","Neve leggera"], 73:["🌨️","Neve"], 75:["❄️","Neve forte"], 77:["❄️","Granelli di neve"],
+    80:["🌦️","Rovesci"], 81:["🌧️","Rovesci"], 82:["⛈️","Rovesci forti"],
+    85:["🌨️","Rovesci di neve"], 86:["❄️","Rovesci di neve"],
+    95:["⛈️","Temporale"], 96:["⛈️","Temporale grandine"], 99:["⛈️","Temporale grandine"]
+  };
+
+  async function loadWeather(){
+    try {
+      const url = "https://api.open-meteo.com/v1/forecast?latitude=" + W_LAT +
+                  "&longitude=" + W_LON +
+                  "&daily=temperature_2m_max,temperature_2m_min,weather_code" +
+                  "&timezone=auto&forecast_days=2";
+      const res = await fetch(url);
+      const d = await res.json();
+      let max = Math.round(d.daily.temperature_2m_max[1]);
+      let min = Math.round(d.daily.temperature_2m_min[1]);
+      let w = WMO[d.daily.weather_code[1]] || ["🌡️", "Variabile"];
+      document.getElementById("w-icon").textContent = w[0];
+      document.getElementById("w-temp").textContent = w[1] + " " + max + "°";
+      document.getElementById("w-minmax").textContent = "min " + min + "°";
+    } catch(e){
+      document.getElementById("w-icon").textContent = "⚠️";
+      document.getElementById("w-temp").textContent = "Meteo non disponibile";
+    }
+  }
+  loadWeather();
+  setInterval(loadWeather, 30 * 60 * 1000);
+
+  function pad(n){ return n < 10 ? "0"+n : n; }
+  function tick(){
+    const d = new Date();
+    document.getElementById("clock").textContent =
+      pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()) + ":";
+    document.getElementById("ct").textContent = pad(Math.floor(d.getMilliseconds() / 100));
+  }
+  setInterval(tick, 100);
+  tick();
+
+  const bd = new Date();
+  document.getElementById("branddate").textContent =
+    bd.toLocaleDateString("en-US", { month: "long" }) + " : " + bd.getDate();
+
+  const q = document.getElementById("q");
+  q.addEventListener("keydown", e => {
+    if (e.key === "Enter" && q.value.trim()) {
+      window.open("https://duck.ai/?q=" + encodeURIComponent(q.value.trim()), "_self");
+    }
+  });
+</script>
+
+</body>
+</html>
