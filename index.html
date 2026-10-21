@@ -108,16 +108,16 @@
     top: 26px;
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 5;
     text-align: center;
     pointer-events: none;
     text-shadow: 0 4px 26px rgba(0,0,0,.6);
   }
 
   .dayname {
-    font-size: clamp(40px, 5.2vw, 72px);
+    font-size: clamp(36px, 4.4vw, 64px);
     font-weight: 200;
-    letter-spacing: 10px;
+    letter-spacing: 7px;
     text-transform: uppercase;
     line-height: 1;
     white-space: nowrap;
@@ -131,6 +131,106 @@
     margin-top: 10px;
     font-variant-numeric: tabular-nums;
   }
+
+  /* ---------- Colonna sinistra ---------- */
+  .left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 4;
+    width: min(430px, 23vw);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px 20px calc(48px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+  }
+
+  .left::-webkit-scrollbar { width: 8px; }
+  .left::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 4px; }
+
+  .cat-head {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    opacity: .72;
+    margin-bottom: 12px;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--c, #444);
+    color: var(--t, #fff);
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,.45);
+    transition: transform .15s, filter .15s;
+  }
+
+  .chip img,
+  .chip .ico {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 23px;
+    height: 23px;
+    object-fit: contain;
+  }
+
+  .chip.fav img { filter: brightness(0) invert(1); }
+
+  .chip.wide img {
+    width: 32px;
+    height: 11px;
+    filter: brightness(0) invert(1);
+  }
+
+  .chip:hover {
+    transform: translateY(-2px) scale(1.07);
+    filter: brightness(1.12);
+    z-index: 20;
+  }
+
+  .chip::after {
+    content: attr(data-name);
+    position: absolute;
+    top: calc(100% + 9px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: rgba(6,6,9,.96);
+    border: 1px solid rgba(255,255,255,.18);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .2px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s, transform .15s;
+    z-index: 30;
+  }
+
+  .chip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ---------- Colonna destra ---------- */
   .side {
@@ -363,10 +463,62 @@
   #overlay p { font-size: 15px; opacity: .85; }
 
   /* ---------- Phone: search only ---------- */
+  @media (max-width: 1180px) {
+    .left { display: none; }
+  }
+
   @media (max-width: 900px), (max-height: 560px) {
     .side { display: none; }
     .topclock { display: none; }
     .search-wrap { width: 100%; }
+  }
+
+  /* ---------- Phone: categorie collassabili ---------- */
+  @media (max-width: 900px) {
+    .left {
+      display: flex;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: auto;
+      width: 100%;
+      max-height: 48vh;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 14px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .left .card {
+      flex: 0 0 auto;
+      padding: 12px 14px;
+    }
+
+    .left .links { display: none; }
+
+    .left .card.open .links {
+      display: flex;
+      margin-top: 12px;
+    }
+
+    .cat-head {
+      margin-bottom: 0;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cat-head::after {
+      content: "+";
+      font-size: 17px;
+      font-weight: 400;
+      opacity: .85;
+    }
+
+    .left .card.open .cat-head::after { content: "\2212"; }
   }
 
   @media (max-width: 520px) {
@@ -378,6 +530,80 @@
 <body>
 
 <div id="player"></div>
+
+<aside class="left">
+  <div class="card">
+    <div class="cat-head">Social</div>
+    <div class="links">
+      <a class="chip" style="--c:#FF4500" data-name="Reddit" href="https://www.reddit.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/reddit/fff" alt="Reddit" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#229ED9" data-name="Telegram" href="https://web.telegram.org/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/telegram/fff" alt="Telegram" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#1877F2" data-name="Facebook" href="https://www.facebook.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/facebook/fff" alt="Facebook" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#E4405F" data-name="Instagram" href="https://www.instagram.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/instagram/fff" alt="Instagram" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#F5C518;--t:#111" data-name="IMDb" href="https://www.imdb.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/imdb/fff" alt="IMDb" onerror="this.remove()"></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cat-head">Google</div>
+    <div class="links">
+      <a class="chip" style="--c:#FF0000" data-name="YouTube" href="https://www.youtube.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/fff" alt="YouTube" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#0F9D58" data-name="Drive" href="https://drive.google.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/googledrive/fff" alt="Google Drive" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#EA4335" data-name="Gmail" href="https://mail.google.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/gmail/fff" alt="Gmail" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#4285F4" data-name="Calendar" href="https://calendar.google.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/googlecalendar/fff" alt="Google Calendar" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#F4B400;--t:#111" data-name="Keep" href="https://keep.google.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/googlekeep/fff" alt="Google Keep" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#34A853" data-name="Maps" href="https://www.google.com/maps" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/googlemaps/fff" alt="Google Maps" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#1A73E8" data-name="Trova il mio telefono" href="https://www.google.com/find-my-device" target="_blank" rel="noopener"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2.4"></circle><path d="M12 1.5v3.2M12 19.3v3.2M1.5 12h3.2M19.3 12h3.2"></path></svg></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cat-head">Media</div>
+    <div class="links">
+      <a class="chip" style="--c:#ED1B2E" data-name="Mega" href="https://mega.nz/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/mega/fff" alt="Mega" onerror="this.remove()"></a>
+      <a class="chip fav" style="--c:#1B1B22" data-name="FMHY" href="https://fmhy.net/" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=fmhy.net&amp;sz=128" alt="FMHY" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#141414" data-name="Z-Library" href="https://z-lib.io/" target="_blank" rel="noopener"><svg class="ico" viewBox="0 0 24 24" fill="#fff"><path d="M3 4h18v4.4L9.9 16H21v4H3v-4.4L14.1 8H3z"></path></svg></a>
+      <a class="chip fav" style="--c:#1A1A1A" data-name="FitGirl" href="https://fitgirl-repacks.site/" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=fitgirl-repacks.site&amp;sz=128" alt="FitGirl" onerror="this.remove()"></a>
+      <a class="chip fav" style="--c:#3D6DF0" data-name="File.io" href="https://www.file.io/" target="_blank" rel="noopener"><img src="https://icons.duckduckgo.com/ip3/file.io.ico" alt="File.io" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#1B2838" data-name="Steam" href="https://store.steampowered.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/steam/fff" alt="Steam" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#313131" data-name="Epic Games" href="https://store.epicgames.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/epicgames/fff" alt="Epic Games" onerror="this.remove()"></a>
+      <a class="chip fav" style="--c:#86328A" data-name="GOG" href="https://www.gog.com/" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=www.gog.com&amp;sz=128" alt="GOG" onerror="this.remove()"></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cat-head">Image</div>
+    <div class="links">
+      <a class="chip" style="--c:#E60023" data-name="Pinterest" href="https://www.pinterest.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/pinterest/fff" alt="Pinterest" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#1E88E5" data-name="Photopea" href="https://www.photopea.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/photopea/fff" alt="Photopea" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#333" data-name="Graphite" href="https://graphite.app/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/graphite/fff" alt="Graphite" onerror="this.remove()"></a>
+      <a class="chip fav" style="--c:#1A1A1A" data-name="Dafont" href="https://www.dafont.com/" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=www.dafont.com&amp;sz=128" alt="Dafont" onerror="this.remove()"></a>
+      <a class="chip fav" style="--c:#1B6EF3" data-name="Remove.bg" href="https://www.remove.bg/" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=www.remove.bg&amp;sz=128" alt="Remove.bg" onerror="this.remove()"></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cat-head">Lab</div>
+    <div class="links">
+      <a class="chip" style="--c:#181717" data-name="GitHub" href="https://github.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/github/fff" alt="GitHub" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#0C3C60" data-name="cPanel" href="https://cpanel.net/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/cpanel/fff" alt="cPanel" onerror="this.remove()"></a>
+      <a class="chip fav" style="--c:#00A0E9" data-name="MakerWorld" href="https://makerworld.com/" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=makerworld.com&amp;sz=128" alt="MakerWorld" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#2FA84F" data-name="Thingiverse" href="https://www.thingiverse.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/thingiverse/fff" alt="Thingiverse" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#ED7D31" data-name="Printables" href="https://www.printables.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/printables/fff" alt="Printables" onerror="this.remove()"></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cat-head">Shop</div>
+    <div class="links">
+      <a class="chip" style="--c:#E62E04" data-name="AliExpress" href="https://www.aliexpress.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/aliexpress/fff" alt="AliExpress" onerror="this.remove()"></a>
+      <a class="chip wide" style="--c:#FF9900" data-name="Amazon" href="https://www.amazon.it/" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#E53238" data-name="eBay" href="https://www.ebay.it/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/ebay/fff" alt="eBay" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#0058A3" data-name="IKEA" href="https://www.ikea.com/it/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/ikea/fff" alt="IKEA" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#0B0B0B" data-name="Revolut" href="https://www.revolut.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/revolut/fff" alt="Revolut" onerror="this.remove()"></a>
+      <a class="chip" style="--c:#003087" data-name="PayPal" href="https://www.paypal.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/paypal/fff" alt="PayPal" onerror="this.remove()"></a>
+    </div>
+  </div>
+</aside>
 
 <div class="topclock">
   <div class="dayname" id="dayName"></div>
@@ -534,7 +760,7 @@
   }
 
   document.addEventListener("click", function (e) {
-    if (e.target.closest("input, textarea, button, select, a, .side, #overlay")) return;
+    if (e.target.closest("input, textarea, button, select, a, .side, .left, #overlay")) return;
     toggleAudio();
   });
 
@@ -709,6 +935,19 @@
     document.getElementById("calGrid").innerHTML = html;
   }
   renderCalendar();
+
+  /* ================= Categorie collassabili (telefono) ================= */
+  document.querySelectorAll(".cat-head").forEach(function (head) {
+    head.addEventListener("click", function () {
+      var card = head.parentElement;
+      var opened = card.classList.toggle("open");
+      if (opened) {
+        document.querySelectorAll(".left .card.open").forEach(function (c) {
+          if (c !== card) c.classList.remove("open");
+        });
+      }
+    });
+  });
 
   /* ================= Notepad ================= */
   var notes = document.getElementById("notes");
