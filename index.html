@@ -15,23 +15,18 @@
     color: #fff;
   }
 
-  /* ---------- Background ---------- */
-  #bg {
-    position: fixed;
-    inset: 0;
-    background: #000 center/cover no-repeat;
-    z-index: 0;
-  }
-
+  /* ---------- Video (cover: riempie lo schermo, ritagliato) ---------- */
   #player {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 1920px;
+    height: 1080px;
     border: 0;
     pointer-events: none;
     z-index: 1;
+    transform-origin: center center;
+    will-change: transform;
   }
 
   /* ---------- Content ---------- */
@@ -131,6 +126,36 @@
   #sound:hover { opacity: 1; transform: scale(1.06); }
   #sound svg { width: 20px; height: 20px; }
 
+  /* ---------- Overlay "clicca per riprodere" ---------- */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background: rgba(0,0,0,.55);
+    cursor: pointer;
+  }
+
+  #overlay.show { display: flex; }
+
+  #overlay .play {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    display: grid;
+    place-items: center;
+  }
+
+  #overlay .play svg { width: 34px; height: 34px; margin-left: 4px; }
+  #overlay p { font-size: 15px; opacity: .85; }
+
   @media (max-width: 520px) {
     .search-box { padding: 4px 18px; }
     #q { font-size: 16px; }
@@ -139,7 +164,6 @@
 </head>
 <body>
 
-<div id="bg"></div>
 <div id="player"></div>
 
 <div class="stage">
@@ -164,16 +188,27 @@
   </svg>
 </button>
 
+<div id="overlay">
+  <div class="play">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+  </div>
+  <p>Clicca per riprodere il video</p>
+</div>
+
 <script>
   var VIDEO_ID = "rFZHOHl-L8A";
   var SEARCH_URL = "https://www.google.com/search?q=";
 
-  /* ---------- Background fallback (thumbnail) ---------- */
-  document.getElementById("bg").style.backgroundImage =
-    "url(https://i.ytimg.com/vi/" + VIDEO_ID + "/maxresdefault.jpg)";
+  /* Risoluzione nativa del video: l'iframe viene scalato da qui (nitidezza massima) */
+  var BASE_W = 1920;
+  var BASE_H = 1080;
+  /* Leggero over-scan: elimina eventuali bordi residui del player YouTube */
+  var OVERSCAN = 1.04;
+
+  var player = null;
+  var overlay = document.getElementById("overlay");
 
   /* ---------- YouTube player ---------- */
-  var player = null;
   var tag = document.createElement("script");
   tag.src = "https://www.youtube.com/iframe_api";
   document.head.appendChild(tag);
@@ -182,6 +217,8 @@
     player = new YT.Player("player", {
       videoId: VIDEO_ID,
       host: "https://www.youtube-nocookie.com",
+      width: BASE_W,
+      height: BASE_H,
       playerVars: {
         autoplay: 1,
         loop: 1,
@@ -200,34 +237,49 @@
           e.target.mute();
           e.target.playVideo();
           fitPlayer();
+          overlay.classList.remove("show");
+        },
+        onError: function (e) {
+          overlay.classList.add("show");
+        },
+        onStateChange: function (e) {
+          if (e.data === YT.PlayerState.PLAYING) overlay.classList.remove("show");
         }
       }
     });
   }
 
-  /* ---------- Fit video to screen (cover, no black bars) ---------- */
+  /* ---------- Cover: il video riempie lo schermo, ritagliato ---------- */
   function fitPlayer() {
     var el = document.getElementById("player");
     if (!el) return;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var ar = 16 / 9;
-    var w, h;
-    if (vw / vh > ar) {
-      h = vh; w = h * ar;
-    } else {
-      w = vw; h = w / ar;
-    }
-    el.style.width = w + "px";
-    el.style.height = h + "px";
-    el.style.left = Math.round((vw - w) / 2) + "px";
-    el.style.top = Math.round((vh - h) / 2) + "px";
+
+    /* scala minima per coprire l'intero viewport (mai bande nere) */
+    var k = Math.max(vw / BASE_W, vh / BASE_H) * OVERSCAN;
+
+    el.style.width = BASE_W + "px";
+    el.style.height = BASE_H + "px";
+    el.style.left = Math.round((vw - BASE_W) / 2) + "px";
+    el.style.top = Math.round((vh - BASE_H) / 2) + "px";
+    el.style.transform = "scale(" + k + ")";
   }
 
   fitPlayer();
   window.addEventListener("resize", fitPlayer);
-  window.addEventListener("orientationchange", function () {
-    setTimeout(fitPlayer, 250);
+  window.addEventListener("orientationchange", function () { setTimeout(fitPlayer, 300); });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", fitPlayer);
+  }
+
+  /* ---------- Overlay ---------- */
+  overlay.addEventListener("click", function () {
+    if (player && player.playVideo) {
+      player.mute();
+      player.playVideo();
+    }
+    overlay.classList.remove("show");
   });
 
   /* ---------- Search ---------- */
