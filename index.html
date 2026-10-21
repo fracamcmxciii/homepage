@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -167,6 +167,9 @@
     flex-direction: column;
   }
 
+  .card.cal { flex: 0 0 auto; }
+  .card.grow { flex: 2 1 auto; }
+
   /* Meteo */
   .wx {
     display: flex;
@@ -255,15 +258,15 @@
   }
 
   .cal-grid .dow {
-    font-size: 12px;
+    font-size: 11.5px;
     opacity: .5;
-    padding-bottom: 6px;
+    padding-bottom: 5px;
     text-transform: uppercase;
   }
 
   .cal-grid .day {
-    font-size: 16px;
-    padding: 8px 0;
+    font-size: 15px;
+    padding: 6px 0;
     border-radius: 10px;
     opacity: .85;
     font-variant-numeric: tabular-nums;
@@ -388,22 +391,22 @@
         <circle cx="11" cy="11" r="7"></circle>
         <path d="M20 20l-3.5-3.5"></path>
       </svg>
-      <input id="q" type="text" placeholder="Search on Google..." autofocus spellcheck="false">
+      <input id="q" type="text" placeholder="Cerca su Google..." autofocus spellcheck="false">
     </div>
   </form>
-  <div class="hint"><kbd>/</kbd> to search &nbsp;·&nbsp; <kbd>Esc</kbd> to exit &nbsp;·&nbsp; click the background for audio</div>
+  <div class="hint"><kbd>/</kbd> per cercare &nbsp;·&nbsp; <kbd>Esc</kbd> per uscire &nbsp;·&nbsp; clicca sullo sfondo per l'audio</div>
 </div>
 
 <aside class="side">
   <div class="card">
     <div class="wx-place">
-      <span>Weather</span>
-      <b id="wxCity" title="Click to change the city">&nbsp;</b>
+      <span>Meteo</span>
+      <b id="wxCity" title="Clicca per cambiare città">&nbsp;</b>
     </div>
     <div class="wx">
       <div class="wx-icon" id="wxIconNow"></div>
       <div class="wx-main">
-        <div class="wx-title">Today</div>
+        <div class="wx-title">Oggi</div>
         <div class="wx-desc" id="wxDescNow">—</div>
         <div class="wx-sub" id="wxSubNow"></div>
       </div>
@@ -415,7 +418,7 @@
     <div class="wx">
       <div class="wx-icon" id="wxIcon12"></div>
       <div class="wx-main">
-        <div class="wx-title">In 12 hours</div>
+        <div class="wx-title">Tra 12 ore</div>
         <div class="wx-desc" id="wxDesc12">—</div>
         <div class="wx-sub" id="wxSub12"></div>
       </div>
@@ -423,14 +426,14 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card cal">
     <div class="cal-head"><span id="calTitle"></span><span id="calToday"></span></div>
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <div class="card">
-    <div class="note-head"><span>Notes</span><span id="noteState"></span></div>
-    <textarea id="notes" placeholder="Write here..." spellcheck="false"></textarea>
+  <div class="card grow">
+    <div class="note-head"><span>Note</span><span id="noteState"></span></div>
+    <textarea id="notes" placeholder="Scrivi qui..." spellcheck="false"></textarea>
   </div>
 </aside>
 
@@ -440,7 +443,7 @@
   <div class="play">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
   </div>
-  <p>Click to play the video</p>
+  <p>Clicca per riprodere il video</p>
 </div>
 
 <script>
@@ -527,7 +530,7 @@
     if (player && player.mute && player.unMute) {
       muted ? player.mute() : player.unMute();
     }
-    showToast(muted ? "Audio off" : "Audio on", muted ? ICON_MUTED : ICON_SOUND);
+    showToast(muted ? "Audio disattivato" : "Audio attivo", muted ? ICON_MUTED : ICON_SOUND);
   }
 
   document.addEventListener("click", function (e) {
@@ -535,15 +538,15 @@
     toggleAudio();
   });
 
-  /* ================= Clock ================= */
-  var DOW_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  var MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July",
-                   "August", "September", "October", "November", "December"];
+  /* ================= Orologio ================= */
+  var DOW = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+  var MONTHS = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
+                "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 
   function tick() {
     var d = new Date();
     var h = d.getHours(), m = d.getMinutes();
-    document.getElementById("dayName").textContent = DOW_EN[d.getDay()];
+    document.getElementById("dayName").textContent = DOW[d.getDay()];
     document.getElementById("time").textContent =
       (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
   }
@@ -552,34 +555,34 @@
 
   /* ================= Weather (Open-Meteo) ================= */
   var WMO = {
-    0:  ["Clear sky", "sun"],
-    1:  ["Mainly clear", "partly"],
-    2:  ["Partly cloudy", "partly"],
-    3:  ["Overcast", "cloud"],
-    45: ["Fog", "fog"],
-    48: ["Freezing fog", "fog"],
-    51: ["Light drizzle", "rain"],
-    53: ["Drizzle", "rain"],
-    55: ["Heavy drizzle", "rain"],
-    56: ["Freezing drizzle", "rain"],
-    57: ["Heavy freezing drizzle", "rain"],
-    61: ["Light rain", "rain"],
-    63: ["Rain", "rain"],
-    65: ["Heavy rain", "rain"],
-    66: ["Freezing rain", "rain"],
-    67: ["Heavy freezing rain", "rain"],
-    71: ["Light snow", "snow"],
-    73: ["Snow", "snow"],
-    75: ["Heavy snow", "snow"],
-    77: ["Snow grains", "snow"],
-    80: ["Light showers", "rain"],
-    81: ["Showers", "rain"],
-    82: ["Violent showers", "rain"],
-    85: ["Snow showers", "snow"],
-    86: ["Heavy snow showers", "snow"],
-    95: ["Thunderstorm", "storm"],
-    96: ["Thunderstorm with hail", "storm"],
-    99: ["Severe thunderstorm with hail", "storm"]
+    0:  ["Sereno", "sun"],
+    1:  ["Prevalentemente sereno", "partly"],
+    2:  ["Parzialmente nuvoloso", "partly"],
+    3:  ["Coperto", "cloud"],
+    45: ["Nebbia", "fog"],
+    48: ["Nebbia con brina", "fog"],
+    51: ["Pioviggine leggera", "rain"],
+    53: ["Pioviggine", "rain"],
+    55: ["Pioviggine forte", "rain"],
+    56: ["Pioviggine gelata", "rain"],
+    57: ["Pioviggine gelata forte", "rain"],
+    61: ["Pioggia leggera", "rain"],
+    63: ["Pioggia", "rain"],
+    65: ["Pioggia forte", "rain"],
+    66: ["Pioggia gelata", "rain"],
+    67: ["Pioggia gelata forte", "rain"],
+    71: ["Neve leggera", "snow"],
+    73: ["Neve", "snow"],
+    75: ["Neve abbondante", "snow"],
+    77: ["Granelli di neve", "snow"],
+    80: ["Rovesci leggeri", "rain"],
+    81: ["Rovesci", "rain"],
+    82: ["Rovesci violenti", "rain"],
+    85: ["Rovesci di neve", "snow"],
+    86: ["Rovesci di neve forti", "snow"],
+    95: ["Temporale", "storm"],
+    96: ["Temporale con grandine", "storm"],
+    99: ["Temporale con grandine forte", "storm"]
   };
 
   var ICONS = {
@@ -593,39 +596,28 @@
   };
 
   function wxInfo(code) {
-    var e = WMO[code] || ["Unknown", "cloud"];
+    var e = WMO[code] || ["Sconosciuto", "cloud"];
     return { desc: e[0], icon: ICONS[e[1]] || ICONS.cloud };
   }
 
+  /* Città predefinita: Camaiore (Lucca) */
+  var DEFAULT_CITY = { name: "Camaiore (Lucca)", lat: 43.94265, lon: 10.29754 };
+
   function geocode(name) {
     return fetch("https://geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(name) +
-                 "&count=1&language=en&format=json")
+                 "&count=1&language=it&format=json")
       .then(function (r) { return r.json(); })
       .then(function (j) {
         var r = (j.results || [])[0];
-        if (!r) throw new Error("City not found");
+        if (!r) throw new Error("Città non trovata");
         return { name: r.name, lat: r.latitude, lon: r.longitude };
       });
   }
 
-  function defaultCity() {
-    return geocode("Rome");
-  }
-
   function locate() {
     var saved = null;
-    try { saved = JSON.parse(localStorage.getItem("sp_city")); } catch (e) {}
-    if (saved) return Promise.resolve(saved);
-    return new Promise(function (resolve) {
-      if (!navigator.geolocation) { defaultCity().then(resolve).catch(function () { resolve(null); }); return; }
-      navigator.geolocation.getCurrentPosition(
-        function (pos) {
-          resolve({ name: "Current location", lat: pos.coords.latitude, lon: pos.coords.longitude });
-        },
-        function () { defaultCity().then(resolve).catch(function () { resolve(null); }); },
-        { timeout: 7000, maximumAge: 1800000, enableHighAccuracy: false }
-      );
-    });
+    try { saved = JSON.parse(localStorage.getItem("sp_city2")); } catch (e) {}
+    return Promise.resolve(saved || DEFAULT_CITY);
   }
 
   function loadWeather() {
@@ -640,13 +632,13 @@
         renderWeather(city, j);
       });
     }).catch(function () {
-      document.getElementById("wxDescNow").textContent = "Weather unavailable";
+      document.getElementById("wxDescNow").textContent = "Meteo non disponibile";
     });
   }
 
   function renderWeather(city, j) {
     document.getElementById("wxCity").textContent = city.name;
-    try { localStorage.setItem("sp_city", JSON.stringify(city)); } catch (e) {}
+    try { localStorage.setItem("sp_city2", JSON.stringify(city)); } catch (e) {}
 
     var cur = j.current || {};
     var now = wxInfo(cur.weather_code);
@@ -658,7 +650,7 @@
     if (d0.temperature_2m_max && d0.temperature_2m_min) {
       sub += "min " + Math.round(d0.temperature_2m_min[0]) + "° · max " + Math.round(d0.temperature_2m_max[0]) + "°";
     }
-    if (cur.apparent_temperature != null) sub += (sub ? " · " : "") + "feels like " + Math.round(cur.apparent_temperature) + "°";
+    if (cur.apparent_temperature != null) sub += (sub ? " · " : "") + "percepita " + Math.round(cur.apparent_temperature) + "°";
     document.getElementById("wxSubNow").textContent = sub;
 
     /* In 12 hours (local time of the place) */
@@ -676,19 +668,19 @@
       document.getElementById("wxIcon12").innerHTML = f.icon;
       document.getElementById("wxDesc12").textContent = f.desc;
       document.getElementById("wxTemp12").textContent = Math.round(h.temperature_2m[idx]) + "°";
-      var s12 = "at " + h.time[idx].slice(11, 16);
-      if (h.precipitation_probability) s12 += " · " + h.precipitation_probability[idx] + "% rain";
+      var s12 = "ore " + h.time[idx].slice(11, 16);
+      if (h.precipitation_probability) s12 += " · " + h.precipitation_probability[idx] + "% pioggia";
       document.getElementById("wxSub12").textContent = s12;
     }
   }
 
   document.getElementById("wxCity").addEventListener("click", function () {
-    var name = prompt("City for the weather:", this.textContent.trim());
+    var name = prompt("Città per il meteo:", this.textContent.trim());
     if (!name) return;
     geocode(name).then(function (c) {
-      localStorage.setItem("sp_city", JSON.stringify(c));
+      localStorage.setItem("sp_city2", JSON.stringify(c));
       loadWeather();
-    }).catch(function (err) { alert(err.message || "City not found"); });
+    }).catch(function (err) { alert(err.message || "Città non trovata"); });
   });
 
   loadWeather();
@@ -698,14 +690,14 @@
   function renderCalendar() {
     var d = new Date();
     var y = d.getFullYear(), mo = d.getMonth();
-    document.getElementById("calTitle").textContent = MONTHS_EN[mo] + " " + y;
+    document.getElementById("calTitle").textContent = MONTHS[mo] + " " + y;
     document.getElementById("calToday").textContent = d.getDate() + "-" + (mo + 1);
 
     var first = new Date(y, mo, 1);
     var days = new Date(y, mo + 1, 0).getDate();
-    var offset = (first.getDay() + 6) % 7; /* week starts on Monday */
+    var offset = (first.getDay() + 6) % 7; /* la settimana parte dal lunedì */
 
-    var heads = [["M", "Mon"], ["T", "Tue"], ["W", "Wed"], ["T", "Thu"], ["F", "Fri"], ["S", "Sat"], ["S", "Sun"]];
+    var heads = [["L", "Lun"], ["M", "Mar"], ["M", "Mer"], ["G", "Gio"], ["V", "Ven"], ["S", "Sab"], ["D", "Dom"]];
     var html = heads.map(function (x) {
       return '<div class="dow" title="' + x[1] + '">' + x[0] + "</div>";
     }).join("");
@@ -726,11 +718,11 @@
   notes.value = localStorage.getItem("sp_notes") || "";
 
   notes.addEventListener("input", function () {
-    noteState.textContent = "Saving...";
+    noteState.textContent = "Salvataggio...";
     clearTimeout(noteTimer);
     noteTimer = setTimeout(function () {
       localStorage.setItem("sp_notes", notes.value);
-      noteState.textContent = "Saved";
+      noteState.textContent = "Salvata";
       setTimeout(function () { noteState.textContent = ""; }, 1200);
     }, 400);
   });
