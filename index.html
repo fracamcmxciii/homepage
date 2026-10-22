@@ -30,6 +30,22 @@
     will-change: transform;
   }
 
+  /* ---------- Cornice nera (davanti allo sfondo, dietro gli elementi) ---------- */
+  #frame {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border: clamp(28px, 3.6vw, 62px) solid #000;
+  }
+
+  #frame::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: 1px solid rgba(255,255,255,.14);
+  }
+
   /* ---------- Ricerca (in basso al centro) ---------- */
   .stage {
     position: fixed;
@@ -761,6 +777,7 @@
 
 <div id="player"></div>
 <div id="gifbg"><img src="GIFs/tenor.gif" alt=""></div>
+<div id="frame"></div>
 
 <aside class="left">
   <div class="card" data-cat="social">
