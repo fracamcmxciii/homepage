@@ -496,7 +496,10 @@
   #notes::placeholder { color: rgba(255,255,255,.35); }
 
   /* GIF nella card Note */
-  .card.note-card { position: relative; }
+  .card.note-card {
+    position: relative;
+    background: #060609;
+  }
 
   .note-gif {
     position: absolute;
@@ -505,7 +508,7 @@
     height: calc(100% - 12px);
     width: auto;
     border-radius: 12px;
-    opacity: .5;
+    opacity: .1;
     z-index: 0;
     pointer-events: none;
     display: block;
