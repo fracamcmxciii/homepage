@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Start</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -208,8 +211,9 @@
     position: relative;
     width: 42px;
     height: 42px;
-    border-radius: 12px;
-    background: var(--c, #444);
+    border-radius: 14px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.12);
     color: var(--t, #fff);
     display: grid;
     place-items: center;
@@ -217,8 +221,19 @@
     font-weight: 800;
     letter-spacing: .5px;
     text-decoration: none;
-    box-shadow: 0 4px 14px rgba(0,0,0,.45);
-    transition: transform .15s, filter .15s;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35);
+    transition: transform .15s, filter .15s, border-color .15s;
+  }
+
+  /* Tinta del brand, tenue, dentro la tile scura */
+  .chip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--c, #4a4a55);
+    opacity: .28;
+    pointer-events: none;
   }
 
   .chip img,
@@ -230,6 +245,7 @@
     width: 23px;
     height: 23px;
     object-fit: contain;
+    z-index: 1;
   }
 
   .chip.fav img { filter: brightness(0) invert(1); }
@@ -260,6 +276,7 @@
   .chip:hover {
     transform: translateY(-2px) scale(1.07);
     filter: brightness(1.12);
+    border-color: rgba(255,255,255,.32);
     z-index: 20;
   }
 
@@ -573,6 +590,176 @@
   #overlay .play svg { width: 34px; height: 34px; margin-left: 4px; }
   #overlay p { font-size: 15px; opacity: .85; }
 
+  /* ================= Tema notebook ================= */
+  :root {
+    --paper: #fbf6e9;
+    --paper-2: #fffdf7;
+    --ink: #2e2a24;
+    --line: rgba(88,126,182,.20);
+    --red: #c9553f;
+    --hand: "Caveat", "Segoe Script", cursive;
+    --note: "Patrick Hand", "Segoe Print", "Comic Sans MS", cursive;
+  }
+
+  body { font-family: var(--note); }
+
+  .card {
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(to bottom, transparent 0 26px, var(--line) 26px 27px);
+    background-position: 0 9px;
+    border: 1px solid rgba(46,42,36,.20);
+    border-radius: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 12px 30px rgba(0,0,0,.38);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .cat-head {
+    font-family: var(--hand);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: none;
+    margin-bottom: 8px;
+  }
+
+  .cat-title { opacity: .88; }
+
+  /* Chip: ritagli di carta con logo a inchiostro */
+  .chip {
+    background: var(--paper-2);
+    border: 1px solid rgba(46,42,36,.38);
+    border-radius: 10px;
+    box-shadow: 0 2px 0 rgba(46,42,36,.10);
+  }
+
+  .chip::before { opacity: .18; }
+
+  .chip img,
+  .chip .ico { filter: brightness(0) saturate(0); opacity: .8; }
+
+  .chip.fav img { filter: brightness(0) saturate(0); opacity: .8; }
+  .chip.wide img { filter: brightness(0) saturate(0); opacity: .8; }
+
+  .chip:hover {
+    filter: none;
+    border-color: var(--red);
+    box-shadow: 0 3px 0 rgba(46,42,36,.12);
+  }
+
+  .chip::after {
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    border-radius: 6px;
+    font-family: var(--note);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  /* Orologio */
+  .dayname {
+    font-family: var(--hand);
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: none;
+    color: #fffdf7;
+  }
+
+  .time {
+    font-family: var(--note);
+    color: #fffdf7;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 14px rgba(0,0,0,.6);
+  }
+
+  /* Ricerca */
+  .search-box {
+    background: var(--paper-2);
+    border: 1px solid rgba(46,42,36,.35);
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.45);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    color: var(--ink);
+  }
+
+  .search-box:focus-within {
+    background: #fff;
+    border-color: var(--red);
+    box-shadow: 0 14px 38px rgba(0,0,0,.5);
+  }
+
+  #q { color: var(--ink); font-family: var(--note); font-size: 20px; }
+  #q::placeholder { color: rgba(46,42,36,.42); }
+
+  .hint { color: #fffdf7; opacity: .85; }
+  .hint kbd { border-color: rgba(255,253,247,.55); font-family: var(--note); }
+
+  /* Meteo: GIF come illustrazione stampata */
+  .wx-bg { opacity: .38; mix-blend-mode: multiply; }
+  .wx-bg::after {
+    background: linear-gradient(90deg, rgba(251,246,233,.94) 0%, rgba(251,246,233,.55) 58%, rgba(251,246,233,.16) 100%);
+  }
+
+  .wx-title { color: var(--ink); font-size: 13px; letter-spacing: 1.2px; opacity: .5; }
+  .wx-desc { color: var(--ink); font-weight: 400; }
+  .wx-temp { font-family: var(--hand); font-weight: 700; letter-spacing: 0; }
+  .wx-sub { color: var(--ink); opacity: .5; }
+  .wx-place { color: var(--ink); opacity: .65; }
+
+  /* Calendario */
+  .cal-head { color: var(--ink); opacity: .7; font-size: 14px; }
+  .cal-grid .dow { opacity: .42; }
+  .cal-grid .day { color: var(--ink); opacity: .8; font-family: var(--note); font-size: 16px; }
+  .cal-grid .day.today {
+    background: linear-gradient(180deg, transparent 16%, #f8e08c 16%, #f8e08c 86%, transparent 86%);
+    border-radius: 3px;
+    color: var(--ink);
+    font-weight: 400;
+    opacity: 1;
+  }
+
+  /* Note: foglio a righe */
+  .card.note-card {
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(to bottom, transparent 0 26px, var(--line) 26px 27px);
+    background-position: 0 9px;
+  }
+  .note-gif { opacity: .07; mix-blend-mode: multiply; border-radius: 8px; }
+  .note-head { color: var(--ink); opacity: .5; font-size: 14px; }
+  #notes { color: var(--ink); font-family: var(--note); font-size: 20px; line-height: 27px; }
+  #notes::placeholder { color: rgba(46,42,36,.32); }
+
+  /* Toast */
+  #toast {
+    background: var(--paper-2);
+    border: 1px solid rgba(46,42,36,.3);
+    color: var(--ink);
+    border-radius: 10px;
+    box-shadow: 0 10px 26px rgba(0,0,0,.45);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* Overlay riproduzione */
+  #overlay .play {
+    background: rgba(251,246,233,.92);
+    border: 1px solid rgba(46,42,36,.28);
+    color: var(--ink);
+  }
+  #overlay p { color: #fffdf7; }
+
+  /* GIF delle categorie: stampa leggera */
+  .left .cat-gif { opacity: .3; mix-blend-mode: multiply; }
+
+  .dayname { font-size: clamp(108px, 13.2vw, 192px); }
+  .time { font-size: 48px; }
+  .cat-head { font-size: 56px; }
+  .wx-desc { font-size: 42px; }
+
   /* ---------- Phone: search only ---------- */
   @media (max-width: 1180px) {
     .left { display: none; }
@@ -656,6 +843,7 @@
     }
 
     .topclock .dayname {
+      font-family: var(--note);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 2px;
