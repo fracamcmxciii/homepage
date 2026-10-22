@@ -33,6 +33,25 @@
     will-change: transform;
   }
 
+  /* ---------- Cornice (sopra lo sfondo, sotto gli elementi) ---------- */
+  #frame {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border: clamp(28px, 3.6vw, 62px) solid var(--paper, #fbf6e9);
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(46,42,36,.35), inset 0 0 40px rgba(0,0,0,.28);
+  }
+
+  #frame::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(46,42,36,.22);
+    border-radius: 6px;
+  }
+
   /* ---------- Ricerca (in basso al centro) ---------- */
   .stage {
     position: fixed;
@@ -49,7 +68,7 @@
 
   .search-wrap {
     position: relative;
-    width: min(620px, calc(100vw - 48px));
+    width: min(700px, calc(100vw - 48px));
     pointer-events: auto;
   }
 
@@ -57,7 +76,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 4px 22px;
+    padding: 5px 24px;
     border-radius: 999px;
     background: rgba(8,8,10,.62);
     border: 1px solid rgba(255,255,255,.2);
@@ -73,7 +92,7 @@
     box-shadow: 0 16px 52px rgba(0,0,0,.65);
   }
 
-  .search-box svg { flex: 0 0 auto; width: 21px; height: 21px; opacity: .9; }
+  .search-box svg { flex: 0 0 auto; width: 24px; height: 24px; opacity: .9; }
 
   #q {
     flex: 1 1 auto;
@@ -83,12 +102,13 @@
     background: transparent;
     color: #fff;
     font-size: 17px;
-    padding: 14px 0;
+    padding: 15px 0;
   }
 
   #q::placeholder { color: rgba(255,255,255,.6); }
 
   .hint {
+    order: -1;
     font-size: 12.5px;
     letter-spacing: .4px;
     opacity: .55;
@@ -104,6 +124,24 @@
     padding: 1px 5px;
     margin: 0 2px;
   }
+
+  /* ---------- Lingua ---------- */
+  .lang {
+    display: flex;
+    gap: 6px;
+    order: -2;
+    pointer-events: auto;
+    margin-bottom: 4px;
+  }
+
+  .lang button {
+    font: inherit;
+    font-size: 14px;
+    padding: 3px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
 
   /* ---------- Orologio (in alto al centro) ---------- */
   .topclock {
@@ -698,6 +736,21 @@
   .hint { color: #fffdf7; opacity: .85; }
   .hint kbd { border-color: rgba(255,253,247,.55); font-family: var(--note); }
 
+  .lang button {
+    font-family: var(--note);
+    font-size: 15px;
+    color: var(--ink);
+    background: rgba(255,253,247,.72);
+    border: 1px solid rgba(46,42,36,.35);
+    box-shadow: 0 6px 18px rgba(0,0,0,.28);
+  }
+  .lang button:hover { border-color: var(--red); }
+  .lang button.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
   /* Meteo: GIF come illustrazione stampata */
   .wx-bg { opacity: .38; mix-blend-mode: multiply; }
   .wx-bg::after {
@@ -949,6 +1002,7 @@
 
 <div id="player"></div>
 <div id="gifbg"><img src="GIFs/tenor.gif" alt=""></div>
+<div id="frame"></div>
 
 <aside class="left">
   <div class="card" data-cat="social">
@@ -1047,7 +1101,11 @@
       <input id="q" type="text" placeholder="Cerca su Google..." autofocus spellcheck="false">
     </div>
   </form>
-  <div class="hint"><kbd>/</kbd> per cercare &nbsp;·&nbsp; <kbd>Esc</kbd> per uscire &nbsp;·&nbsp; clicca sullo sfondo per l'audio</div>
+  <div class="lang" id="lang">
+    <button type="button" data-lang="it">Italiano</button>
+    <button type="button" data-lang="en">English</button>
+  </div>
+  <div class="hint" id="hint"><kbd>/</kbd> per cercare &nbsp;·&nbsp; <kbd>Esc</kbd> per uscire &nbsp;·&nbsp; clicca sullo sfondo per l'audio</div>
 </div>
 
 <aside class="side">
@@ -1115,6 +1173,11 @@
 
   /* Su telefono lo sfondo è la GIF: niente player YouTube */
   var isPhone = window.matchMedia("(max-width: 900px)").matches;
+
+  /* Lingua della pagina (it / en) */
+  var LANG = "it";
+  try { LANG = localStorage.getItem("sp_lang") || "it"; } catch (e) {}
+
 
   /* ================= YouTube player ================= */
   if (!isPhone) {
@@ -1192,7 +1255,7 @@
     if (player && player.mute && player.unMute) {
       muted ? player.mute() : player.unMute();
     }
-    showToast(muted ? "Audio disattivato" : "Audio attivo", muted ? ICON_MUTED : ICON_SOUND);
+    showToast(muted ? I18N[LANG].audioOff : I18N[LANG].audioOn, muted ? ICON_MUTED : ICON_SOUND);
   }
 
   document.addEventListener("click", function (e) {
@@ -1201,51 +1264,78 @@
   });
 
   /* ================= Orologio ================= */
-  var DOW = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
-  var MONTHS = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
-                "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+  var I18N = {
+    it: {
+      searchPh: "Cerca su Google...",
+      hint: "<kbd>/</kbd> per cercare &nbsp;·&nbsp; <kbd>Esc</kbd> per uscire &nbsp;·&nbsp; clicca sullo sfondo per l'audio",
+      weather: "Meteo", today: "Oggi", in12: "Tra 12 ore",
+      notesPh: "Scrivi qui...", saving: "Salvataggio...", saved: "Salvata",
+      audioOn: "Audio attivo", audioOff: "Audio disattivato",
+      overlay: "Clicca per riprodurre il video",
+      changeCity: "Clicca per cambiare città",
+      promptCity: "Città per il meteo:", cityNotFound: "Città non trovata",
+      noWeather: "Meteo non disponibile",
+      feels: "percepita", rain: "pioggia", hours: "ore",
+      dow: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+      months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
+               "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+      calHeads: [["L", "Lun"], ["M", "Mar"], ["M", "Mer"], ["G", "Gio"], ["V", "Ven"], ["S", "Sab"], ["D", "Dom"]],
+      wmo: [
+        "Sereno", "Prevalentemente sereno", "Parzialmente nuvoloso", "Coperto",
+        "Nebbia", "Nebbia con brina",
+        "Pioviggine leggera", "Pioviggine", "Pioviggine forte", "Pioviggine gelata", "Pioviggine gelata forte",
+        "Pioggia leggera", "Pioggia", "Pioggia forte", "Pioggia gelata", "Pioggia gelata forte",
+        "Neve leggera", "Neve", "Neve abbondante", "Granelli di neve",
+        "Rovesci leggeri", "Rovesci", "Rovesci violenti", "Rovesci di neve", "Rovesci di neve forti",
+        "Temporale", "Temporale con grandine", "Temporale con grandine forte"
+      ]
+    },
+    en: {
+      searchPh: "Search on Google...",
+      hint: "<kbd>/</kbd> to search &nbsp;·&nbsp; <kbd>Esc</kbd> to exit &nbsp;·&nbsp; click the background for audio",
+      weather: "Weather", today: "Today", in12: "In 12 hours",
+      notesPh: "Write here...", saving: "Saving...", saved: "Saved",
+      audioOn: "Audio on", audioOff: "Audio muted",
+      overlay: "Click to play the video",
+      changeCity: "Click to change city",
+      promptCity: "City for the weather:", cityNotFound: "City not found",
+      noWeather: "Weather unavailable",
+      feels: "feels like", rain: "rain", hours: "at",
+      dow: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      months: ["January", "February", "March", "April", "May", "June", "July",
+               "August", "September", "October", "November", "December"],
+      calHeads: [["M", "Mon"], ["T", "Tue"], ["W", "Wed"], ["T", "Thu"], ["F", "Fri"], ["S", "Sat"], ["S", "Sun"]],
+      wmo: [
+        "Clear sky", "Mainly clear", "Partly cloudy", "Overcast",
+        "Fog", "Depositing rime fog",
+        "Light drizzle", "Moderate drizzle", "Dense drizzle", "Light freezing drizzle", "Dense freezing drizzle",
+        "Slight rain", "Moderate rain", "Heavy rain", "Light freezing rain", "Heavy freezing rain",
+        "Slight snow fall", "Moderate snow fall", "Heavy snow fall", "Snow grains",
+        "Slight rain showers", "Moderate rain showers", "Violent rain showers", "Slight snow showers", "Heavy snow showers",
+        "Thunderstorm", "Thunderstorm with slight hail", "Thunderstorm with heavy hail"
+      ]
+    }
+  };
 
   function tick() {
     var d = new Date();
-    var h = d.getHours(), m = d.getMinutes();
-    document.getElementById("dayName").textContent = DOW[d.getDay()];
+    var h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+    document.getElementById("dayName").textContent = I18N[LANG].dow[d.getDay()];
     document.getElementById("time").textContent =
-      (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+      (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
   }
   tick();
   setInterval(tick, 1000);
 
   /* ================= Weather (Open-Meteo) ================= */
-  var WMO = {
-    0:  ["Sereno", "sun"],
-    1:  ["Prevalentemente sereno", "partly"],
-    2:  ["Parzialmente nuvoloso", "partly"],
-    3:  ["Coperto", "cloud"],
-    45: ["Nebbia", "fog"],
-    48: ["Nebbia con brina", "fog"],
-    51: ["Pioviggine leggera", "rain"],
-    53: ["Pioviggine", "rain"],
-    55: ["Pioviggine forte", "rain"],
-    56: ["Pioviggine gelata", "rain"],
-    57: ["Pioviggine gelata forte", "rain"],
-    61: ["Pioggia leggera", "rain"],
-    63: ["Pioggia", "rain"],
-    65: ["Pioggia forte", "rain"],
-    66: ["Pioggia gelata", "rain"],
-    67: ["Pioggia gelata forte", "rain"],
-    71: ["Neve leggera", "snow"],
-    73: ["Neve", "snow"],
-    75: ["Neve abbondante", "snow"],
-    77: ["Granelli di neve", "snow"],
-    80: ["Rovesci leggeri", "rain"],
-    81: ["Rovesci", "rain"],
-    82: ["Rovesci violenti", "rain"],
-    85: ["Rovesci di neve", "snow"],
-    86: ["Rovesci di neve forti", "snow"],
-    95: ["Temporale", "storm"],
-    96: ["Temporale con grandine", "storm"],
-    99: ["Temporale con grandine forte", "storm"]
-  };
+  var WMO_CODE = [0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67,
+                  71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99];
+  var WMO_ICON = ["sun", "partly", "partly", "cloud", "fog", "fog",
+                  "rain", "rain", "rain", "rain", "rain",
+                  "rain", "rain", "rain", "rain", "rain",
+                  "snow", "snow", "snow", "snow",
+                  "rain", "rain", "rain", "snow", "snow",
+                  "storm", "storm", "storm"];
 
   var ICONS = {
     sun:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>',
@@ -1258,8 +1348,10 @@
   };
 
   function wxInfo(code) {
-    var e = WMO[code] || ["Sconosciuto", "cloud"];
-    return { desc: e[0], key: e[1], icon: ICONS[e[1]] || ICONS.cloud };
+    var i = WMO_CODE.indexOf(code);
+    if (i < 0) return { desc: LANG === "en" ? "Unknown" : "Sconosciuto", key: "cloud", icon: ICONS.cloud };
+    var key = WMO_ICON[i];
+    return { desc: I18N[LANG].wmo[i], key: key, icon: ICONS[key] || ICONS.cloud };
   }
 
   /* Sfondo GIF della card meteo, in base all'icona */
@@ -1273,11 +1365,11 @@
 
   function geocode(name) {
     return fetch("https://geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(name) +
-                 "&count=1&language=it&format=json")
+                 "&count=1&language=" + LANG + "&format=json")
       .then(function (r) { return r.json(); })
       .then(function (j) {
         var r = (j.results || [])[0];
-        if (!r) throw new Error("Città non trovata");
+        if (!r) throw new Error(I18N[LANG].cityNotFound);
         return { name: r.name, lat: r.latitude, lon: r.longitude };
       });
   }
@@ -1300,7 +1392,7 @@
         renderWeather(city, j);
       });
     }).catch(function () {
-      document.getElementById("wxDescNow").textContent = "Meteo non disponibile";
+      document.getElementById("wxDescNow").textContent = I18N[LANG].noWeather;
     });
   }
 
@@ -1319,7 +1411,7 @@
     if (d0.temperature_2m_max && d0.temperature_2m_min) {
       sub += "min " + Math.round(d0.temperature_2m_min[0]) + "° · max " + Math.round(d0.temperature_2m_max[0]) + "°";
     }
-    if (cur.apparent_temperature != null) sub += (sub ? " · " : "") + "percepita " + Math.round(cur.apparent_temperature) + "°";
+    if (cur.apparent_temperature != null) sub += (sub ? " · " : "") + I18N[LANG].feels + " " + Math.round(cur.apparent_temperature) + "°";
     document.getElementById("wxSubNow").textContent = sub;
 
     /* In 12 hours (local time of the place) */
@@ -1338,19 +1430,19 @@
       document.getElementById("wxDesc12").textContent = f.desc;
       document.getElementById("wxTemp12").textContent = Math.round(h.temperature_2m[idx]) + "°";
       setWxBg("wxBg12", f.key);
-      var s12 = "ore " + h.time[idx].slice(11, 16);
-      if (h.precipitation_probability) s12 += " · " + h.precipitation_probability[idx] + "% pioggia";
+      var s12 = I18N[LANG].hours + " " + h.time[idx].slice(11, 16);
+      if (h.precipitation_probability) s12 += " · " + h.precipitation_probability[idx] + "% " + I18N[LANG].rain;
       document.getElementById("wxSub12").textContent = s12;
     }
   }
 
   document.getElementById("wxCity").addEventListener("click", function () {
-    var name = prompt("Città per il meteo:", this.textContent.trim());
+    var name = prompt(I18N[LANG].promptCity, this.textContent.trim());
     if (!name) return;
     geocode(name).then(function (c) {
       localStorage.setItem("sp_city2", JSON.stringify(c));
       loadWeather();
-    }).catch(function (err) { alert(err.message || "Città non trovata"); });
+    }).catch(function (err) { alert(err.message || I18N[LANG].cityNotFound); });
   });
 
   loadWeather();
@@ -1360,14 +1452,14 @@
   function renderCalendar() {
     var d = new Date();
     var y = d.getFullYear(), mo = d.getMonth();
-    document.getElementById("calTitle").textContent = MONTHS[mo] + " " + y;
+    document.getElementById("calTitle").textContent = I18N[LANG].months[mo] + " " + y;
     document.getElementById("calToday").textContent = d.getDate() + "-" + (mo + 1);
 
     var first = new Date(y, mo, 1);
     var days = new Date(y, mo + 1, 0).getDate();
     var offset = (first.getDay() + 6) % 7; /* la settimana parte dal lunedì */
 
-    var heads = [["L", "Lun"], ["M", "Mar"], ["M", "Mer"], ["G", "Gio"], ["V", "Ven"], ["S", "Sab"], ["D", "Dom"]];
+    var heads = I18N[LANG].calHeads;
     var html = heads.map(function (x) {
       return '<div class="dow" title="' + x[1] + '">' + x[0] + "</div>";
     }).join("");
@@ -1427,14 +1519,47 @@
   notes.value = localStorage.getItem("sp_notes") || "";
 
   notes.addEventListener("input", function () {
-    noteState.textContent = "Salvataggio...";
+    noteState.textContent = I18N[LANG].saving;
     clearTimeout(noteTimer);
     noteTimer = setTimeout(function () {
       localStorage.setItem("sp_notes", notes.value);
-      noteState.textContent = "Salvata";
+      noteState.textContent = I18N[LANG].saved;
       setTimeout(function () { noteState.textContent = ""; }, 1200);
     }, 400);
   });
+
+  /* ================= Lingua ================= */
+  function applyLang(reload) {
+    var t = I18N[LANG];
+    document.documentElement.lang = LANG;
+    document.getElementById("q").placeholder = t.searchPh;
+    document.getElementById("notes").placeholder = t.notesPh;
+    document.getElementById("hint").innerHTML = t.hint;
+    document.getElementById("wxCity").title = t.changeCity;
+    document.querySelector("#wxCardNow .wx-title").textContent = t.today;
+    document.querySelector("#wxCard12 .wx-title").textContent = t.in12;
+    document.querySelector(".wx-place span").textContent = t.weather;
+    document.querySelector("#overlay p").textContent = t.overlay;
+    document.querySelectorAll(".lang button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-lang") === LANG);
+    });
+    tick();
+    renderCalendar();
+    if (reload) loadWeather();
+  }
+
+  document.querySelectorAll(".lang button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var l = b.getAttribute("data-lang");
+      if (l === LANG) return;
+      LANG = l;
+      try { localStorage.setItem("sp_lang", l); } catch (e) {}
+      applyLang(true);
+    });
+  });
+
+  applyLang(false);
+
 </script>
 </body>
 </html>
