@@ -287,6 +287,35 @@
   .card.cal { flex: 0 0 auto; }
   .card.grow { flex: 2 1 auto; }
 
+  /* Sfondo GIF delle card meteo */
+  .card.wx-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .wx-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: .55;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .wx-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(6,6,9,.92) 0%, rgba(6,6,9,.6) 55%, rgba(6,6,9,.25) 100%);
+  }
+
+  .wx-card > *:not(.wx-bg) {
+    position: relative;
+    z-index: 1;
+  }
+
   /* Meteo */
   .wx {
     display: flex;
@@ -655,7 +684,8 @@
 </div>
 
 <aside class="side">
-  <div class="card">
+  <div class="card wx-card" id="wxCardNow">
+    <div class="wx-bg" id="wxBgNow"></div>
     <div class="wx-place">
       <span>Meteo</span>
       <b id="wxCity" title="Clicca per cambiare città">&nbsp;</b>
@@ -671,7 +701,8 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card wx-card" id="wxCard12">
+    <div class="wx-bg" id="wxBg12"></div>
     <div class="wx">
       <div class="wx-icon" id="wxIcon12"></div>
       <div class="wx-main">
@@ -860,7 +891,13 @@
 
   function wxInfo(code) {
     var e = WMO[code] || ["Sconosciuto", "cloud"];
-    return { desc: e[0], icon: ICONS[e[1]] || ICONS.cloud };
+    return { desc: e[0], key: e[1], icon: ICONS[e[1]] || ICONS.cloud };
+  }
+
+  /* Sfondo GIF della card meteo, in base all'icona */
+  function setWxBg(id, key) {
+    var el = document.getElementById(id);
+    if (el) el.style.backgroundImage = "url('GIFs/" + key + ".gif')";
   }
 
   /* Città predefinita: Camaiore (Lucca) */
@@ -908,6 +945,7 @@
     document.getElementById("wxIconNow").innerHTML = now.icon;
     document.getElementById("wxDescNow").textContent = now.desc;
     document.getElementById("wxTempNow").textContent = Math.round(cur.temperature_2m) + "°";
+    setWxBg("wxBgNow", now.key);
     var d0 = j.daily || {};
     var sub = "";
     if (d0.temperature_2m_max && d0.temperature_2m_min) {
@@ -931,6 +969,7 @@
       document.getElementById("wxIcon12").innerHTML = f.icon;
       document.getElementById("wxDesc12").textContent = f.desc;
       document.getElementById("wxTemp12").textContent = Math.round(h.temperature_2m[idx]) + "°";
+      setWxBg("wxBg12", f.key);
       var s12 = "ore " + h.time[idx].slice(11, 16);
       if (h.precipitation_probability) s12 += " · " + h.precipitation_probability[idx] + "% pioggia";
       document.getElementById("wxSub12").textContent = s12;
