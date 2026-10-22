@@ -203,6 +203,23 @@
     filter: brightness(0) invert(1);
   }
 
+  .chip.phone-only { display: none; }
+
+  /* Sfondo GIF (solo telefono) */
+  #gifbg {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: none;
+  }
+
+  #gifbg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
   .chip:hover {
     transform: translateY(-2px) scale(1.07);
     filter: brightness(1.12);
@@ -519,6 +536,17 @@
     }
 
     .left .card.open .cat-head::after { content: "\2212"; }
+
+    /* Solo telefono */
+    .stage { display: none; }
+    #player { display: none; }
+    #gifbg { display: block; }
+
+    .chip.phone-only { display: grid; }
+
+    .left .card[data-cat="google"],
+    .left .card[data-cat="image"],
+    .left .card[data-cat="lab"] { display: none; }
   }
 
   @media (max-width: 520px) {
@@ -530,9 +558,10 @@
 <body>
 
 <div id="player"></div>
+<div id="gifbg"><img src="GIFs/tenor.gif" alt=""></div>
 
 <aside class="left">
-  <div class="card">
+  <div class="card" data-cat="social">
     <div class="cat-head">Social</div>
     <div class="links">
       <a class="chip" style="--c:#FF4500" data-name="Reddit" href="https://www.reddit.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/reddit/fff" alt="Reddit" onerror="this.remove()"></a>
@@ -540,10 +569,12 @@
       <a class="chip" style="--c:#1877F2" data-name="Facebook" href="https://www.facebook.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/facebook/fff" alt="Facebook" onerror="this.remove()"></a>
       <a class="chip" style="--c:#E4405F" data-name="Instagram" href="https://www.instagram.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/instagram/fff" alt="Instagram" onerror="this.remove()"></a>
       <a class="chip" style="--c:#F5C518;--t:#111" data-name="IMDb" href="https://www.imdb.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/imdb/fff" alt="IMDb" onerror="this.remove()"></a>
+      <a class="chip phone-only" style="--c:#FF0000" data-name="YouTube" href="https://www.youtube.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/fff" alt="YouTube" onerror="this.remove()"></a>
+      <a class="chip phone-only" style="--c:#E60023" data-name="Pinterest" href="https://www.pinterest.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/pinterest/fff" alt="Pinterest" onerror="this.remove()"></a>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-cat="google">
     <div class="cat-head">Google</div>
     <div class="links">
       <a class="chip" style="--c:#FF0000" data-name="YouTube" href="https://www.youtube.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/fff" alt="YouTube" onerror="this.remove()"></a>
@@ -556,7 +587,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-cat="media">
     <div class="cat-head">Media</div>
     <div class="links">
       <a class="chip" style="--c:#ED1B2E" data-name="Mega" href="https://mega.nz/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/mega/fff" alt="Mega" onerror="this.remove()"></a>
@@ -570,7 +601,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-cat="image">
     <div class="cat-head">Image</div>
     <div class="links">
       <a class="chip" style="--c:#E60023" data-name="Pinterest" href="https://www.pinterest.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/pinterest/fff" alt="Pinterest" onerror="this.remove()"></a>
@@ -581,7 +612,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-cat="lab">
     <div class="cat-head">Lab</div>
     <div class="links">
       <a class="chip" style="--c:#181717" data-name="GitHub" href="https://github.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/github/fff" alt="GitHub" onerror="this.remove()"></a>
@@ -592,7 +623,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-cat="shop">
     <div class="cat-head">Shop</div>
     <div class="links">
       <a class="chip" style="--c:#E62E04" data-name="AliExpress" href="https://www.aliexpress.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/aliexpress/fff" alt="AliExpress" onerror="this.remove()"></a>
@@ -683,10 +714,15 @@
   var muted = true;
   var overlay = document.getElementById("overlay");
 
+  /* Su telefono lo sfondo è la GIF: niente player YouTube */
+  var isPhone = window.matchMedia("(max-width: 900px)").matches;
+
   /* ================= YouTube player ================= */
-  var tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
+  if (!isPhone) {
+    var tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+  }
 
   function onYouTubeIframeAPIReady() {
     player = new YT.Player("player", {
@@ -752,6 +788,7 @@
   }
 
   function toggleAudio() {
+    if (!player) return;
     muted = !muted;
     if (player && player.mute && player.unMute) {
       muted ? player.mute() : player.unMute();
