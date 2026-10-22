@@ -588,15 +588,15 @@
   @media (max-width: 900px) {
     .left {
       display: flex;
-      top: 0;
+      top: auto;
       left: 0;
       right: 0;
-      bottom: auto;
+      bottom: 0;
       width: 100%;
-      max-height: 48vh;
+      max-height: 52vh;
       flex-direction: column;
       gap: 8px;
-      padding: 12px 14px;
+      padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
       overflow-y: auto;
       overflow-x: hidden;
     }
@@ -610,8 +610,10 @@
     .left .links { display: none; }
 
     .left .card.open .links {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(4, 42px);
+      justify-content: end;
+      gap: 8px;
       margin-top: 12px;
     }
 
@@ -633,13 +635,94 @@
 
     .left .card.open .cat-head::after { content: "\2212"; }
 
+    /* ---------- Phone: ora in alto a sinistra ---------- */
+    .topclock {
+      display: flex;
+      top: 16px;
+      left: 10px;
+      right: auto;
+      width: calc(50vw - 14px);
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .topclock .time {
+      font-size: 40px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      margin-top: 0;
+      opacity: .95;
+    }
+
+    .topclock .dayname {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-top: 4px;
+      opacity: .8;
+    }
+
+    /* ---------- Phone: meteo e calendario in alto a destra/sinistra ---------- */
+    .side {
+      display: grid;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: auto;
+      width: auto;
+      max-height: none;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 84px auto;
+      align-items: start;
+      gap: 8px;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .side > .card {
+      padding: 10px 12px;
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.45);
+    }
+
+    .side > .card.wx-card { grid-column: 2; }
+    .side > #wxCardNow { grid-row: 1; }
+    .side > #wxCard12 { grid-row: 2; }
+    .side > .card.cal { grid-column: 1; grid-row: 2; }
+    .side > .card.note-card { display: none; }
+
+    .wx { gap: 8px; }
+    .wx-icon { width: 32px; height: 32px; }
+    .wx-icon svg { width: 28px; height: 28px; }
+    .wx-title { font-size: 9px; letter-spacing: .8px; }
+    .wx-desc { font-size: 12px; margin-top: 2px; }
+    .wx-sub { font-size: 9.5px; margin-top: 2px; }
+    .wx-temp { font-size: 24px; letter-spacing: -1px; }
+    .wx-place { font-size: 9px; letter-spacing: .6px; margin-bottom: 6px; justify-content: flex-start; }
+    .wx-place span { display: none; }
+    .wx-place b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .side .cal-head { font-size: 10.5px; letter-spacing: 1px; margin-bottom: 8px; }
+    .side .cal-grid { gap: 2px; }
+    .side .cal-grid .dow { font-size: 9px; padding-bottom: 3px; }
+    .side .cal-grid .day { font-size: 11.5px; padding: 4px 0; border-radius: 7px; }
+
     /* Solo telefono */
     .stage { display: none; }
     #player { display: none; }
     #gifbg { display: block; }
 
     .chip.phone-only { display: grid; }
-    .cat-gif { top: 4px; left: 4px; height: calc(100% - 8px); width: auto; }
+    .cat-gif { top: 4px; left: 4px; height: calc(100% - 8px); width: auto; opacity: .5; }
+
+    /* Velo nero 10% davanti alla GIF */
+    #gifbg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.1);
+    }
 
     .left .card[data-cat="google"],
     .left .card[data-cat="image"],
@@ -1099,6 +1182,12 @@
       }
     });
   });
+
+  /* Social aperta di default su telefono */
+  if (isPhone) {
+    var socialCard = document.querySelector('.left .card[data-cat="social"]');
+    if (socialCard) socialCard.classList.add("open");
+  }
 
   /* ================= Notepad ================= */
   var notes = document.getElementById("notes");
