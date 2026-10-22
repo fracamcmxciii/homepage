@@ -139,9 +139,10 @@
     left: 0;
     bottom: 0;
     z-index: 4;
-    width: min(430px, 23vw);
-    display: flex;
-    flex-direction: column;
+    width: min(850px, 45vw);
+    display: grid;
+    grid-template-columns: max-content;
+    grid-auto-rows: minmax(min-content, 1fr);
     gap: 14px;
     padding: 24px 20px calc(48px + env(safe-area-inset-bottom));
     overflow-y: auto;
@@ -153,19 +154,55 @@
   .left::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 4px; }
 
   .cat-head {
-    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 2.2px;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    opacity: .72;
     margin-bottom: 12px;
+  }
+
+  .cat-title {
+    margin-left: auto;
+    text-align: right;
+    opacity: .72;
+  }
+
+  .left .card {
+    position: relative;
+  }
+
+  .left .card .cat-head,
+  .left .card .links {
+    position: relative;
+    z-index: 1;
+  }
+
+  .cat-gif {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    height: calc(100% - 12px);
+    width: auto;
+    border-radius: 12px;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+    display: block;
   }
 
   .links {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
     gap: 8px;
+    margin-top: auto;
   }
+
+  /* GIF della colonna sinistra al 50% di opacità */
+  .left .cat-gif { opacity: .5; }
 
   .chip {
     position: relative;
@@ -248,6 +285,10 @@
   }
 
   .chip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Ultima icona a filo destro: tooltip ancorato a destra per non uscire dalla card */
+  .links .chip:last-child::after { left: auto; right: 0; transform: translateY(-4px); }
+  .links .chip:last-child:hover::after { transform: translateY(0); }
 
   /* ---------- Colonna destra ---------- */
   .side {
@@ -454,6 +495,27 @@
 
   #notes::placeholder { color: rgba(255,255,255,.35); }
 
+  /* GIF nella card Note */
+  .card.note-card { position: relative; }
+
+  .note-gif {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    height: calc(100% - 12px);
+    width: auto;
+    border-radius: 12px;
+    opacity: .5;
+    z-index: 0;
+    pointer-events: none;
+    display: block;
+  }
+
+  .card.note-card > *:not(.note-gif) {
+    position: relative;
+    z-index: 1;
+  }
+
   /* ---------- Toast audio ---------- */
   #toast {
     position: fixed;
@@ -538,6 +600,7 @@
 
     .left .card {
       flex: 0 0 auto;
+      width: 100%;
       padding: 12px 14px;
     }
 
@@ -545,6 +608,7 @@
 
     .left .card.open .links {
       display: flex;
+      flex-wrap: wrap;
       margin-top: 12px;
     }
 
@@ -572,6 +636,7 @@
     #gifbg { display: block; }
 
     .chip.phone-only { display: grid; }
+    .cat-gif { top: 4px; left: 4px; height: calc(100% - 8px); width: auto; }
 
     .left .card[data-cat="google"],
     .left .card[data-cat="image"],
@@ -591,7 +656,8 @@
 
 <aside class="left">
   <div class="card" data-cat="social">
-    <div class="cat-head">Social</div>
+    <img class="cat-gif" src="GIFs/01.gif" alt="">
+    <div class="cat-head"><span class="cat-title">Social</span></div>
     <div class="links">
       <a class="chip" style="--c:#FF4500" data-name="Reddit" href="https://www.reddit.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/reddit/fff" alt="Reddit" onerror="this.remove()"></a>
       <a class="chip" style="--c:#229ED9" data-name="Telegram" href="https://web.telegram.org/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/telegram/fff" alt="Telegram" onerror="this.remove()"></a>
@@ -604,7 +670,8 @@
   </div>
 
   <div class="card" data-cat="google">
-    <div class="cat-head">Google</div>
+    <img class="cat-gif" src="GIFs/09.gif" alt="">
+    <div class="cat-head"><span class="cat-title">Google</span></div>
     <div class="links">
       <a class="chip" style="--c:#FF0000" data-name="YouTube" href="https://www.youtube.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/fff" alt="YouTube" onerror="this.remove()"></a>
       <a class="chip" style="--c:#0F9D58" data-name="Drive" href="https://drive.google.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/googledrive/fff" alt="Google Drive" onerror="this.remove()"></a>
@@ -617,7 +684,8 @@
   </div>
 
   <div class="card" data-cat="media">
-    <div class="cat-head">Media</div>
+    <img class="cat-gif" src="GIFs/03.gif" alt="">
+    <div class="cat-head"><span class="cat-title">Media</span></div>
     <div class="links">
       <a class="chip" style="--c:#ED1B2E" data-name="Mega" href="https://mega.nz/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/mega/fff" alt="Mega" onerror="this.remove()"></a>
       <a class="chip fav" style="--c:#1B1B22" data-name="FMHY" href="https://fmhy.net/" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=fmhy.net&amp;sz=128" alt="FMHY" onerror="this.remove()"></a>
@@ -631,7 +699,8 @@
   </div>
 
   <div class="card" data-cat="image">
-    <div class="cat-head">Image</div>
+    <img class="cat-gif" src="GIFs/06.gif" alt="">
+    <div class="cat-head"><span class="cat-title">Image</span></div>
     <div class="links">
       <a class="chip" style="--c:#E60023" data-name="Pinterest" href="https://www.pinterest.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/pinterest/fff" alt="Pinterest" onerror="this.remove()"></a>
       <a class="chip" style="--c:#1E88E5" data-name="Photopea" href="https://www.photopea.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/photopea/fff" alt="Photopea" onerror="this.remove()"></a>
@@ -642,7 +711,8 @@
   </div>
 
   <div class="card" data-cat="lab">
-    <div class="cat-head">Lab</div>
+    <img class="cat-gif" src="GIFs/02.gif" alt="">
+    <div class="cat-head"><span class="cat-title">Lab</span></div>
     <div class="links">
       <a class="chip" style="--c:#181717" data-name="GitHub" href="https://github.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/github/fff" alt="GitHub" onerror="this.remove()"></a>
       <a class="chip" style="--c:#0C3C60" data-name="cPanel" href="https://cpanel.net/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/cpanel/fff" alt="cPanel" onerror="this.remove()"></a>
@@ -653,7 +723,8 @@
   </div>
 
   <div class="card" data-cat="shop">
-    <div class="cat-head">Shop</div>
+    <img class="cat-gif" src="GIFs/05.gif" alt="">
+    <div class="cat-head"><span class="cat-title">Shop</span></div>
     <div class="links">
       <a class="chip" style="--c:#E62E04" data-name="AliExpress" href="https://www.aliexpress.com/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/aliexpress/fff" alt="AliExpress" onerror="this.remove()"></a>
       <a class="chip wide" style="--c:#FF9900" data-name="Amazon" href="https://www.amazon.it/" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" onerror="this.remove()"></a>
@@ -719,7 +790,8 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <div class="card grow">
+  <div class="card grow note-card">
+    <img class="note-gif" src="GIFs/07.gif" alt="">
     <div class="note-head"><span>Note</span><span id="noteState"></span></div>
     <textarea id="notes" placeholder="Scrivi qui..." spellcheck="false"></textarea>
   </div>
