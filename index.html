@@ -638,7 +638,7 @@
     /* ---------- Phone: ora in alto a sinistra ---------- */
     .topclock {
       display: flex;
-      top: 16px;
+      top: 34px;
       left: 10px;
       right: auto;
       width: calc(50vw - 14px);
@@ -666,14 +666,14 @@
     /* ---------- Phone: meteo e calendario in alto a destra/sinistra ---------- */
     .side {
       display: grid;
-      top: 10px;
+      top: 32px;
       left: 10px;
       right: 10px;
       bottom: auto;
       width: auto;
       max-height: none;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: 84px auto;
+      grid-template-rows: 76px auto;
       align-items: start;
       gap: 8px;
       padding: 0;
@@ -687,21 +687,43 @@
     }
 
     .side > .card.wx-card { grid-column: 2; }
-    .side > #wxCardNow { grid-row: 1; }
-    .side > #wxCard12 { grid-row: 2; }
+    .side > #wxCardNow { grid-row: 1; height: 76px; }
+    .side > #wxCard12 { grid-row: 2; height: 76px; }
     .side > .card.cal { grid-column: 1; grid-row: 2; }
     .side > .card.note-card { display: none; }
 
     .wx { gap: 8px; }
     .wx-icon { width: 32px; height: 32px; }
-    .wx-icon svg { width: 28px; height: 28px; }
-    .wx-title { font-size: 9px; letter-spacing: .8px; }
-    .wx-desc { font-size: 12px; margin-top: 2px; }
-    .wx-sub { font-size: 9.5px; margin-top: 2px; }
+    .wx-icon svg { width: 30px; height: 30px; }
+    .wx-title { font-size: 9.5px; letter-spacing: .8px; white-space: nowrap; }
+    .wx-desc, .wx-sub { display: none; }
     .wx-temp { font-size: 24px; letter-spacing: -1px; }
-    .wx-place { font-size: 9px; letter-spacing: .6px; margin-bottom: 6px; justify-content: flex-start; }
-    .wx-place span { display: none; }
-    .wx-place b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Località fuori dalle card, in alto */
+    .wx-place.phone-place {
+      position: fixed;
+      top: 7px;
+      left: 0;
+      right: 0;
+      width: auto;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin: 0;
+      padding: 0 12px;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      opacity: .85;
+      z-index: 6;
+    }
+    .wx-place.phone-place span { display: none; }
+    .wx-place.phone-place b {
+      font-size: 12px;
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .side .cal-head { font-size: 10.5px; letter-spacing: 1px; margin-bottom: 8px; }
     .side .cal-grid { gap: 2px; }
@@ -1188,6 +1210,26 @@
     var socialCard = document.querySelector('.left .card[data-cat="social"]');
     if (socialCard) socialCard.classList.add("open");
   }
+
+  /* ================= Località meteo: su telefono fuori dalla card ================= */
+  var sideEl = document.querySelector(".side");
+  var wxPlaceEl = document.querySelector(".wx-place");
+  var wxNowEl = document.getElementById("wxCardNow");
+  var phoneMq = window.matchMedia("(max-width: 900px)");
+
+  function placeLocation() {
+    if (!sideEl || !wxPlaceEl || !wxNowEl) return;
+    if (phoneMq.matches) {
+      if (wxPlaceEl.parentElement !== sideEl) sideEl.insertBefore(wxPlaceEl, sideEl.firstChild);
+      wxPlaceEl.classList.add("phone-place");
+    } else {
+      if (wxPlaceEl.parentElement !== wxNowEl) wxNowEl.insertBefore(wxPlaceEl, wxNowEl.firstChild);
+      wxPlaceEl.classList.remove("phone-place");
+    }
+  }
+
+  placeLocation();
+  if (phoneMq.addEventListener) phoneMq.addEventListener("change", placeLocation);
 
   /* ================= Notepad ================= */
   var notes = document.getElementById("notes");
