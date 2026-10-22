@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Start</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -33,25 +30,6 @@
     will-change: transform;
   }
 
-  /* ---------- Cornice (sopra lo sfondo, sotto gli elementi) ---------- */
-  #frame {
-    position: fixed;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    border: clamp(28px, 3.6vw, 62px) solid var(--paper, #fbf6e9);
-    border-radius: 10px;
-    box-shadow: inset 0 0 0 1px rgba(46,42,36,.35), inset 0 0 40px rgba(0,0,0,.28);
-  }
-
-  #frame::before {
-    content: "";
-    position: absolute;
-    inset: 4px;
-    border: 1px solid rgba(46,42,36,.22);
-    border-radius: 6px;
-  }
-
   /* ---------- Ricerca (in basso al centro) ---------- */
   .stage {
     position: fixed;
@@ -68,7 +46,7 @@
 
   .search-wrap {
     position: relative;
-    width: min(700px, calc(100vw - 48px));
+    width: min(620px, calc(100vw - 48px));
     pointer-events: auto;
   }
 
@@ -76,7 +54,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 5px 24px;
+    padding: 4px 22px;
     border-radius: 999px;
     background: rgba(8,8,10,.62);
     border: 1px solid rgba(255,255,255,.2);
@@ -92,7 +70,7 @@
     box-shadow: 0 16px 52px rgba(0,0,0,.65);
   }
 
-  .search-box svg { flex: 0 0 auto; width: 24px; height: 24px; opacity: .9; }
+  .search-box svg { flex: 0 0 auto; width: 21px; height: 21px; opacity: .9; }
 
   #q {
     flex: 1 1 auto;
@@ -102,13 +80,12 @@
     background: transparent;
     color: #fff;
     font-size: 17px;
-    padding: 15px 0;
+    padding: 14px 0;
   }
 
   #q::placeholder { color: rgba(255,255,255,.6); }
 
   .hint {
-    order: -1;
     font-size: 12.5px;
     letter-spacing: .4px;
     opacity: .55;
@@ -124,24 +101,6 @@
     padding: 1px 5px;
     margin: 0 2px;
   }
-
-  /* ---------- Lingua ---------- */
-  .lang {
-    display: flex;
-    gap: 6px;
-    order: -2;
-    pointer-events: auto;
-    margin-bottom: 4px;
-  }
-
-  .lang button {
-    font: inherit;
-    font-size: 14px;
-    padding: 3px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
 
   /* ---------- Orologio (in alto al centro) ---------- */
   .topclock {
@@ -249,9 +208,8 @@
     position: relative;
     width: 42px;
     height: 42px;
-    border-radius: 14px;
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    background: var(--c, #444);
     color: var(--t, #fff);
     display: grid;
     place-items: center;
@@ -259,19 +217,8 @@
     font-weight: 800;
     letter-spacing: .5px;
     text-decoration: none;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35);
-    transition: transform .15s, filter .15s, border-color .15s;
-  }
-
-  /* Tinta del brand, tenue, dentro la tile scura */
-  .chip::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: var(--c, #4a4a55);
-    opacity: .28;
-    pointer-events: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,.45);
+    transition: transform .15s, filter .15s;
   }
 
   .chip img,
@@ -283,7 +230,6 @@
     width: 23px;
     height: 23px;
     object-fit: contain;
-    z-index: 1;
   }
 
   .chip.fav img { filter: brightness(0) invert(1); }
@@ -314,7 +260,6 @@
   .chip:hover {
     transform: translateY(-2px) scale(1.07);
     filter: brightness(1.12);
-    border-color: rgba(255,255,255,.32);
     z-index: 20;
   }
 
@@ -628,191 +573,6 @@
   #overlay .play svg { width: 34px; height: 34px; margin-left: 4px; }
   #overlay p { font-size: 15px; opacity: .85; }
 
-  /* ================= Tema notebook ================= */
-  :root {
-    --paper: #fbf6e9;
-    --paper-2: #fffdf7;
-    --ink: #2e2a24;
-    --line: rgba(88,126,182,.20);
-    --red: #c9553f;
-    --hand: "Caveat", "Segoe Script", cursive;
-    --note: "Patrick Hand", "Segoe Print", "Comic Sans MS", cursive;
-  }
-
-  body { font-family: var(--note); }
-
-  .card {
-    color: var(--ink);
-    background-color: var(--paper);
-    background-image: repeating-linear-gradient(to bottom, transparent 0 26px, var(--line) 26px 27px);
-    background-position: 0 9px;
-    border: 1px solid rgba(46,42,36,.20);
-    border-radius: 12px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 12px 30px rgba(0,0,0,.38);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  .cat-head {
-    font-family: var(--hand);
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: .6px;
-    text-transform: none;
-    margin-bottom: 8px;
-  }
-
-  .cat-title { opacity: .88; }
-
-  /* Chip: ritagli di carta con logo a inchiostro */
-  .chip {
-    background: var(--paper-2);
-    border: 1px solid rgba(46,42,36,.38);
-    border-radius: 10px;
-    box-shadow: 0 2px 0 rgba(46,42,36,.10);
-  }
-
-  .chip::before { opacity: .18; }
-
-  .chip img,
-  .chip .ico { filter: brightness(0) saturate(0); opacity: .8; }
-
-  .chip.fav img { filter: brightness(0) saturate(0); opacity: .8; }
-  .chip.wide img { filter: brightness(0) saturate(0); opacity: .8; }
-
-  .chip:hover {
-    filter: none;
-    border-color: var(--red);
-    box-shadow: 0 3px 0 rgba(46,42,36,.12);
-  }
-
-  .chip::after {
-    background: var(--ink);
-    color: var(--paper);
-    border: 0;
-    border-radius: 6px;
-    font-family: var(--note);
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0;
-  }
-
-  /* Orologio */
-  .dayname {
-    font-family: var(--hand);
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: none;
-    color: #fffdf7;
-  }
-
-  .time {
-    font-family: var(--note);
-    color: #fffdf7;
-    letter-spacing: 4px;
-    text-shadow: 0 2px 14px rgba(0,0,0,.6);
-  }
-
-  /* Ricerca */
-  .search-box {
-    background: var(--paper-2);
-    border: 1px solid rgba(46,42,36,.35);
-    border-radius: 12px;
-    box-shadow: 0 12px 32px rgba(0,0,0,.45);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    color: var(--ink);
-  }
-
-  .search-box:focus-within {
-    background: #fff;
-    border-color: var(--red);
-    box-shadow: 0 14px 38px rgba(0,0,0,.5);
-  }
-
-  #q { color: var(--ink); font-family: var(--note); font-size: 20px; }
-  #q::placeholder { color: rgba(46,42,36,.42); }
-
-  .hint { color: #fffdf7; opacity: .85; }
-  .hint kbd { border-color: rgba(255,253,247,.55); font-family: var(--note); }
-
-  .lang button {
-    font-family: var(--note);
-    font-size: 15px;
-    color: var(--ink);
-    background: rgba(255,253,247,.72);
-    border: 1px solid rgba(46,42,36,.35);
-    box-shadow: 0 6px 18px rgba(0,0,0,.28);
-  }
-  .lang button:hover { border-color: var(--red); }
-  .lang button.active {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--paper);
-  }
-
-  /* Meteo: GIF come illustrazione stampata */
-  .wx-bg { opacity: .38; mix-blend-mode: multiply; }
-  .wx-bg::after {
-    background: linear-gradient(90deg, rgba(251,246,233,.94) 0%, rgba(251,246,233,.55) 58%, rgba(251,246,233,.16) 100%);
-  }
-
-  .wx-title { color: var(--ink); font-size: 13px; letter-spacing: 1.2px; opacity: .5; }
-  .wx-desc { color: var(--ink); font-weight: 400; }
-  .wx-temp { font-family: var(--hand); font-weight: 700; letter-spacing: 0; }
-  .wx-sub { color: var(--ink); opacity: .5; }
-  .wx-place { color: var(--ink); opacity: .65; }
-
-  /* Calendario */
-  .cal-head { color: var(--ink); opacity: .7; font-size: 14px; }
-  .cal-grid .dow { opacity: .42; }
-  .cal-grid .day { color: var(--ink); opacity: .8; font-family: var(--note); font-size: 16px; }
-  .cal-grid .day.today {
-    background: linear-gradient(180deg, transparent 16%, #f8e08c 16%, #f8e08c 86%, transparent 86%);
-    border-radius: 3px;
-    color: var(--ink);
-    font-weight: 400;
-    opacity: 1;
-  }
-
-  /* Note: foglio a righe */
-  .card.note-card {
-    background-color: var(--paper);
-    background-image: repeating-linear-gradient(to bottom, transparent 0 26px, var(--line) 26px 27px);
-    background-position: 0 9px;
-  }
-  .note-gif { opacity: .07; mix-blend-mode: multiply; border-radius: 8px; }
-  .note-head { color: var(--ink); opacity: .5; font-size: 14px; }
-  #notes { color: var(--ink); font-family: var(--note); font-size: 20px; line-height: 27px; }
-  #notes::placeholder { color: rgba(46,42,36,.32); }
-
-  /* Toast */
-  #toast {
-    background: var(--paper-2);
-    border: 1px solid rgba(46,42,36,.3);
-    color: var(--ink);
-    border-radius: 10px;
-    box-shadow: 0 10px 26px rgba(0,0,0,.45);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  /* Overlay riproduzione */
-  #overlay .play {
-    background: rgba(251,246,233,.92);
-    border: 1px solid rgba(46,42,36,.28);
-    color: var(--ink);
-  }
-  #overlay p { color: #fffdf7; }
-
-  /* GIF delle categorie: stampa leggera */
-  .left .cat-gif { opacity: .3; mix-blend-mode: multiply; }
-
-  .dayname { font-size: clamp(108px, 13.2vw, 192px); }
-  .time { font-size: 48px; }
-  .cat-head { font-size: 56px; }
-  .wx-desc { font-size: 42px; }
-
   /* ---------- Phone: search only ---------- */
   @media (max-width: 1180px) {
     .left { display: none; }
@@ -896,7 +656,6 @@
     }
 
     .topclock .dayname {
-      font-family: var(--note);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 2px;
@@ -1002,7 +761,6 @@
 
 <div id="player"></div>
 <div id="gifbg"><img src="GIFs/tenor.gif" alt=""></div>
-<div id="frame"></div>
 
 <aside class="left">
   <div class="card" data-cat="social">
@@ -1101,11 +859,7 @@
       <input id="q" type="text" placeholder="Cerca su Google..." autofocus spellcheck="false">
     </div>
   </form>
-  <div class="lang" id="lang">
-    <button type="button" data-lang="it">Italiano</button>
-    <button type="button" data-lang="en">English</button>
-  </div>
-  <div class="hint" id="hint"><kbd>/</kbd> per cercare &nbsp;·&nbsp; <kbd>Esc</kbd> per uscire &nbsp;·&nbsp; clicca sullo sfondo per l'audio</div>
+  <div class="hint"><kbd>/</kbd> per cercare &nbsp;·&nbsp; <kbd>Esc</kbd> per uscire &nbsp;·&nbsp; clicca sullo sfondo per l'audio</div>
 </div>
 
 <aside class="side">
@@ -1173,11 +927,6 @@
 
   /* Su telefono lo sfondo è la GIF: niente player YouTube */
   var isPhone = window.matchMedia("(max-width: 900px)").matches;
-
-  /* Lingua della pagina (it / en) */
-  var LANG = "it";
-  try { LANG = localStorage.getItem("sp_lang") || "it"; } catch (e) {}
-
 
   /* ================= YouTube player ================= */
   if (!isPhone) {
@@ -1255,7 +1004,7 @@
     if (player && player.mute && player.unMute) {
       muted ? player.mute() : player.unMute();
     }
-    showToast(muted ? I18N[LANG].audioOff : I18N[LANG].audioOn, muted ? ICON_MUTED : ICON_SOUND);
+    showToast(muted ? "Audio disattivato" : "Audio attivo", muted ? ICON_MUTED : ICON_SOUND);
   }
 
   document.addEventListener("click", function (e) {
@@ -1264,78 +1013,51 @@
   });
 
   /* ================= Orologio ================= */
-  var I18N = {
-    it: {
-      searchPh: "Cerca su Google...",
-      hint: "<kbd>/</kbd> per cercare &nbsp;·&nbsp; <kbd>Esc</kbd> per uscire &nbsp;·&nbsp; clicca sullo sfondo per l'audio",
-      weather: "Meteo", today: "Oggi", in12: "Tra 12 ore",
-      notesPh: "Scrivi qui...", saving: "Salvataggio...", saved: "Salvata",
-      audioOn: "Audio attivo", audioOff: "Audio disattivato",
-      overlay: "Clicca per riprodurre il video",
-      changeCity: "Clicca per cambiare città",
-      promptCity: "Città per il meteo:", cityNotFound: "Città non trovata",
-      noWeather: "Meteo non disponibile",
-      feels: "percepita", rain: "pioggia", hours: "ore",
-      dow: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
-      months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
-               "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
-      calHeads: [["L", "Lun"], ["M", "Mar"], ["M", "Mer"], ["G", "Gio"], ["V", "Ven"], ["S", "Sab"], ["D", "Dom"]],
-      wmo: [
-        "Sereno", "Prevalentemente sereno", "Parzialmente nuvoloso", "Coperto",
-        "Nebbia", "Nebbia con brina",
-        "Pioviggine leggera", "Pioviggine", "Pioviggine forte", "Pioviggine gelata", "Pioviggine gelata forte",
-        "Pioggia leggera", "Pioggia", "Pioggia forte", "Pioggia gelata", "Pioggia gelata forte",
-        "Neve leggera", "Neve", "Neve abbondante", "Granelli di neve",
-        "Rovesci leggeri", "Rovesci", "Rovesci violenti", "Rovesci di neve", "Rovesci di neve forti",
-        "Temporale", "Temporale con grandine", "Temporale con grandine forte"
-      ]
-    },
-    en: {
-      searchPh: "Search on Google...",
-      hint: "<kbd>/</kbd> to search &nbsp;·&nbsp; <kbd>Esc</kbd> to exit &nbsp;·&nbsp; click the background for audio",
-      weather: "Weather", today: "Today", in12: "In 12 hours",
-      notesPh: "Write here...", saving: "Saving...", saved: "Saved",
-      audioOn: "Audio on", audioOff: "Audio muted",
-      overlay: "Click to play the video",
-      changeCity: "Click to change city",
-      promptCity: "City for the weather:", cityNotFound: "City not found",
-      noWeather: "Weather unavailable",
-      feels: "feels like", rain: "rain", hours: "at",
-      dow: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      months: ["January", "February", "March", "April", "May", "June", "July",
-               "August", "September", "October", "November", "December"],
-      calHeads: [["M", "Mon"], ["T", "Tue"], ["W", "Wed"], ["T", "Thu"], ["F", "Fri"], ["S", "Sat"], ["S", "Sun"]],
-      wmo: [
-        "Clear sky", "Mainly clear", "Partly cloudy", "Overcast",
-        "Fog", "Depositing rime fog",
-        "Light drizzle", "Moderate drizzle", "Dense drizzle", "Light freezing drizzle", "Dense freezing drizzle",
-        "Slight rain", "Moderate rain", "Heavy rain", "Light freezing rain", "Heavy freezing rain",
-        "Slight snow fall", "Moderate snow fall", "Heavy snow fall", "Snow grains",
-        "Slight rain showers", "Moderate rain showers", "Violent rain showers", "Slight snow showers", "Heavy snow showers",
-        "Thunderstorm", "Thunderstorm with slight hail", "Thunderstorm with heavy hail"
-      ]
-    }
-  };
+  var DOW = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+  var MONTHS = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
+                "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 
   function tick() {
     var d = new Date();
-    var h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
-    document.getElementById("dayName").textContent = I18N[LANG].dow[d.getDay()];
+    var h = d.getHours(), m = d.getMinutes();
+    document.getElementById("dayName").textContent = DOW[d.getDay()];
     document.getElementById("time").textContent =
-      (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+      (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
   }
   tick();
   setInterval(tick, 1000);
 
   /* ================= Weather (Open-Meteo) ================= */
-  var WMO_CODE = [0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67,
-                  71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99];
-  var WMO_ICON = ["sun", "partly", "partly", "cloud", "fog", "fog",
-                  "rain", "rain", "rain", "rain", "rain",
-                  "rain", "rain", "rain", "rain", "rain",
-                  "snow", "snow", "snow", "snow",
-                  "rain", "rain", "rain", "snow", "snow",
-                  "storm", "storm", "storm"];
+  var WMO = {
+    0:  ["Sereno", "sun"],
+    1:  ["Prevalentemente sereno", "partly"],
+    2:  ["Parzialmente nuvoloso", "partly"],
+    3:  ["Coperto", "cloud"],
+    45: ["Nebbia", "fog"],
+    48: ["Nebbia con brina", "fog"],
+    51: ["Pioviggine leggera", "rain"],
+    53: ["Pioviggine", "rain"],
+    55: ["Pioviggine forte", "rain"],
+    56: ["Pioviggine gelata", "rain"],
+    57: ["Pioviggine gelata forte", "rain"],
+    61: ["Pioggia leggera", "rain"],
+    63: ["Pioggia", "rain"],
+    65: ["Pioggia forte", "rain"],
+    66: ["Pioggia gelata", "rain"],
+    67: ["Pioggia gelata forte", "rain"],
+    71: ["Neve leggera", "snow"],
+    73: ["Neve", "snow"],
+    75: ["Neve abbondante", "snow"],
+    77: ["Granelli di neve", "snow"],
+    80: ["Rovesci leggeri", "rain"],
+    81: ["Rovesci", "rain"],
+    82: ["Rovesci violenti", "rain"],
+    85: ["Rovesci di neve", "snow"],
+    86: ["Rovesci di neve forti", "snow"],
+    95: ["Temporale", "storm"],
+    96: ["Temporale con grandine", "storm"],
+    99: ["Temporale con grandine forte", "storm"]
+  };
 
   var ICONS = {
     sun:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>',
@@ -1348,10 +1070,8 @@
   };
 
   function wxInfo(code) {
-    var i = WMO_CODE.indexOf(code);
-    if (i < 0) return { desc: LANG === "en" ? "Unknown" : "Sconosciuto", key: "cloud", icon: ICONS.cloud };
-    var key = WMO_ICON[i];
-    return { desc: I18N[LANG].wmo[i], key: key, icon: ICONS[key] || ICONS.cloud };
+    var e = WMO[code] || ["Sconosciuto", "cloud"];
+    return { desc: e[0], key: e[1], icon: ICONS[e[1]] || ICONS.cloud };
   }
 
   /* Sfondo GIF della card meteo, in base all'icona */
@@ -1365,11 +1085,11 @@
 
   function geocode(name) {
     return fetch("https://geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(name) +
-                 "&count=1&language=" + LANG + "&format=json")
+                 "&count=1&language=it&format=json")
       .then(function (r) { return r.json(); })
       .then(function (j) {
         var r = (j.results || [])[0];
-        if (!r) throw new Error(I18N[LANG].cityNotFound);
+        if (!r) throw new Error("Città non trovata");
         return { name: r.name, lat: r.latitude, lon: r.longitude };
       });
   }
@@ -1392,7 +1112,7 @@
         renderWeather(city, j);
       });
     }).catch(function () {
-      document.getElementById("wxDescNow").textContent = I18N[LANG].noWeather;
+      document.getElementById("wxDescNow").textContent = "Meteo non disponibile";
     });
   }
 
@@ -1411,7 +1131,7 @@
     if (d0.temperature_2m_max && d0.temperature_2m_min) {
       sub += "min " + Math.round(d0.temperature_2m_min[0]) + "° · max " + Math.round(d0.temperature_2m_max[0]) + "°";
     }
-    if (cur.apparent_temperature != null) sub += (sub ? " · " : "") + I18N[LANG].feels + " " + Math.round(cur.apparent_temperature) + "°";
+    if (cur.apparent_temperature != null) sub += (sub ? " · " : "") + "percepita " + Math.round(cur.apparent_temperature) + "°";
     document.getElementById("wxSubNow").textContent = sub;
 
     /* In 12 hours (local time of the place) */
@@ -1430,19 +1150,19 @@
       document.getElementById("wxDesc12").textContent = f.desc;
       document.getElementById("wxTemp12").textContent = Math.round(h.temperature_2m[idx]) + "°";
       setWxBg("wxBg12", f.key);
-      var s12 = I18N[LANG].hours + " " + h.time[idx].slice(11, 16);
-      if (h.precipitation_probability) s12 += " · " + h.precipitation_probability[idx] + "% " + I18N[LANG].rain;
+      var s12 = "ore " + h.time[idx].slice(11, 16);
+      if (h.precipitation_probability) s12 += " · " + h.precipitation_probability[idx] + "% pioggia";
       document.getElementById("wxSub12").textContent = s12;
     }
   }
 
   document.getElementById("wxCity").addEventListener("click", function () {
-    var name = prompt(I18N[LANG].promptCity, this.textContent.trim());
+    var name = prompt("Città per il meteo:", this.textContent.trim());
     if (!name) return;
     geocode(name).then(function (c) {
       localStorage.setItem("sp_city2", JSON.stringify(c));
       loadWeather();
-    }).catch(function (err) { alert(err.message || I18N[LANG].cityNotFound); });
+    }).catch(function (err) { alert(err.message || "Città non trovata"); });
   });
 
   loadWeather();
@@ -1452,14 +1172,14 @@
   function renderCalendar() {
     var d = new Date();
     var y = d.getFullYear(), mo = d.getMonth();
-    document.getElementById("calTitle").textContent = I18N[LANG].months[mo] + " " + y;
+    document.getElementById("calTitle").textContent = MONTHS[mo] + " " + y;
     document.getElementById("calToday").textContent = d.getDate() + "-" + (mo + 1);
 
     var first = new Date(y, mo, 1);
     var days = new Date(y, mo + 1, 0).getDate();
     var offset = (first.getDay() + 6) % 7; /* la settimana parte dal lunedì */
 
-    var heads = I18N[LANG].calHeads;
+    var heads = [["L", "Lun"], ["M", "Mar"], ["M", "Mer"], ["G", "Gio"], ["V", "Ven"], ["S", "Sab"], ["D", "Dom"]];
     var html = heads.map(function (x) {
       return '<div class="dow" title="' + x[1] + '">' + x[0] + "</div>";
     }).join("");
@@ -1519,47 +1239,14 @@
   notes.value = localStorage.getItem("sp_notes") || "";
 
   notes.addEventListener("input", function () {
-    noteState.textContent = I18N[LANG].saving;
+    noteState.textContent = "Salvataggio...";
     clearTimeout(noteTimer);
     noteTimer = setTimeout(function () {
       localStorage.setItem("sp_notes", notes.value);
-      noteState.textContent = I18N[LANG].saved;
+      noteState.textContent = "Salvata";
       setTimeout(function () { noteState.textContent = ""; }, 1200);
     }, 400);
   });
-
-  /* ================= Lingua ================= */
-  function applyLang(reload) {
-    var t = I18N[LANG];
-    document.documentElement.lang = LANG;
-    document.getElementById("q").placeholder = t.searchPh;
-    document.getElementById("notes").placeholder = t.notesPh;
-    document.getElementById("hint").innerHTML = t.hint;
-    document.getElementById("wxCity").title = t.changeCity;
-    document.querySelector("#wxCardNow .wx-title").textContent = t.today;
-    document.querySelector("#wxCard12 .wx-title").textContent = t.in12;
-    document.querySelector(".wx-place span").textContent = t.weather;
-    document.querySelector("#overlay p").textContent = t.overlay;
-    document.querySelectorAll(".lang button").forEach(function (b) {
-      b.classList.toggle("active", b.getAttribute("data-lang") === LANG);
-    });
-    tick();
-    renderCalendar();
-    if (reload) loadWeather();
-  }
-
-  document.querySelectorAll(".lang button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var l = b.getAttribute("data-lang");
-      if (l === LANG) return;
-      LANG = l;
-      try { localStorage.setItem("sp_lang", l); } catch (e) {}
-      applyLang(true);
-    });
-  });
-
-  applyLang(false);
-
 </script>
 </body>
 </html>
